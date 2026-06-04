@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能指标分析平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>指标平台</span>
+            </div>
+            <nav class="menu">
+                <div class="menu-item active" onclick="showPage('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>管理驾驶舱</span>
+                </div>
+                <div class="menu-item" onclick="showPage('system')">
+                    <i class="fas fa-compass"></i>
+                    <span>指标体系</span>
+                </div>
+                <div class="menu-item" onclick="showPage('center')">
+                    <i class="fas fa-database"></i>
+                    <span>指标中心</span>
+                </div>
+                <div class="menu-item" onclick="showPage('market')">
+                    <i class="fas fa-store"></i>
+                    <span>指标市场</span>
+                </div>
+                <div class="menu-item" onclick="showPage('bloodline')">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>指标血缘</span>
+                </div>
+                <div class="menu-item" onclick="showPage('alert')">
+                    <i class="fas fa-bell"></i>
+                    <span>智能预警</span>
+                </div>
+                <div class="menu-item" onclick="showPage('agent')">
+                    <i class="fas fa-robot"></i>
+                    <span>智能应用</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <header class="header">
+                <h1 class="header-title" id="page-title">管理驾驶舱</h1>
+                <div class="user-info">
+                    <i class="fas fa-user-circle" style="margin-right: 8px;"></i>
+                    <span>管理员</span>
+                </div>
+            </header>
+
+            <!-- 页面内容 -->
+            <div class="page-content">
+                <!-- 管理驾驶舱页面 -->
+                <div id="page-dashboard" class="page-section">
+                    <!-- 顶部核心KPI -->
+                    <div class="dashboard-kpi-row">
+                        <div class="kpi-card kpi-primary">
+                            <div class="kpi-icon"><i class="fas fa-chart-line"></i></div>
+                                <div class="kpi-content">
+                                    <div class="kpi-label">综合盈利指数</div>
+                                    <div class="kpi-value">87.5<span class="kpi-unit">%</span></div>
+                                    <div class="kpi-trend up"><i class="fas fa-arrow-up"></i> 同比 +5.2%</div>
+                                </div>
+                        </div>
+                        <div class="kpi-card kpi-success">
+                            <div class="kpi-icon"><i class="fas fa-users"></i></div>
+                                <div class="kpi-content">
+                                    <div class="kpi-label">客户满意度</div>
+                                    <div class="kpi-value">92.1<span class="kpi-unit">%</span></div>
+                                    <div class="kpi-trend up"><i class="fas fa-arrow-up"></i> 环比 +1.5%</div>
+                                </div>
+                        </div>
+                        <div class="kpi-card kpi-warning">
+                            <div class="kpi-icon"><i class="fas fa-shield-alt"></i></div>
+                                <div class="kpi-content">
+                                    <div class="kpi-label">风险控制指数</div>
+                                    <div class="kpi-value">78.3<span class="kpi-unit">%</span></div>
+                                    <div class="kpi-trend down"><i class="fas fa-arrow-down"></i> 环比 -0.8%</div>
+                                </div>
+                        </div>
+                        <div class="kpi-card kpi-info">
+                            <div class="kpi-icon"><i class="fas fa-yen-sign"></i></div>
+                                <div class="kpi-content">
+                                    <div class="kpi-label">本月营收(亿)</div>
+                                    <div class="kpi-value">158.6</div>
+                                    <div class="kpi-trend up"><i class="fas fa-arrow-up"></i> 同比 +11.3%</div>
+                                </div>
+                        </div>
+                    </div>
+
+                    <!-- 中部图表区 -->
+                    <div class="dashboard-chart-row">
+                        <div class="chart-card chart-large">
+                            <div class="chart-header">
+                                <h3 class="chart-title">核心指标趋势</h3>
+                                <div class="chart-tabs">
+                                    <span class="chart-tab active">近7天</span>
+                                    <span class="chart-tab">近30天</span>
+                                    <span class="chart-tab">近1年</span>
+                                </div>
+                            </div>
+                            <div class="chart-body">
+                                <div id="chart-trend" class="chart-placeholder">
+                                    <svg viewBox="0 0 600 200" preserveAspectRatio="none" style="width: 100%; height: 200px;">
+                                        <defs>
+                                            <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.4" />
+                                                <stop offset="100%" style="stop-color:#667eea;stop-opacity:0" />
+                                            </linearGradient>
+                                        </defs>
+                                        <path d="M 0,150 L 50,120 L 100,130 L 150,100 L 200,110 L 250,80 L 300,90 L 350,60 L 400,70 L 450,50 L 500,40 L 550,30 L 600,20 L 600,200 L 0,200 Z" fill="url(#grad1)"/>
+                                        <polyline points="0,150 50,120 100,130 150,100 200,110 250,80 300,90 350,60 400,70 450,50 500,40 550,30 600,20" fill="none" stroke="#667eea" stroke-width="2.5"/>
+                                        <polyline points="0,170 50,160 100,150 150,145 200,140 250,130 300,120 350,110 400,100 450,95 500,90 550,85 600,80" fill="none" stroke="#48bb78" stroke-width="2.5" stroke-dasharray="4,2"/>
+                                    </svg>
+                                    <div class="chart-legend">
+                                        <span><i style="background:#667eea"></i> 净利润</span>
+                                        <span><i style="background:#48bb78"></i> 营收</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-card chart-small">
+                            <div class="chart-header">
+                                <h3 class="chart-title">业务结构</h3>
+                            </div>
+                            <div class="chart-body">
+                                <div class="pie-legend-container">
+                                    <svg viewBox="0 0 120 120" class="pie-chart">
+                                        <circle cx="60" cy="60" r="50" fill="none" stroke="#667eea" stroke-width="20" stroke-dasharray="125 314" transform="rotate(-90 60 60)"/>
+                                        <circle cx="60" cy="60" r="50" fill="none" stroke="#48bb78" stroke-width="20" stroke-dasharray="94 314" stroke-dashoffset="-125" transform="rotate(-90 60 60)"/>
+                                        <circle cx="60" cy="60" r="50" fill="none" stroke="#ed8936" stroke-width="20" stroke-dasharray="62 314" stroke-dashoffset="-219" transform="rotate(-90 60 60)"/>
+                                        <circle cx="60" cy="60" r="50" fill="none" stroke="#f56565" stroke-width="20" stroke-dasharray="33 314" stroke-dashoffset="-281" transform="rotate(-90 60 60)"/>
+                                    </svg>
+                                    <ul class="pie-legend">
+                                        <li><span class="legend-color" style="background:#667eea"></span> 银行业务 <strong>40%</strong></li>
+                                        <li><span class="legend-color" style="background:#48bb78"></span> 保险业务 <strong>30%</strong></li>
+                                        <li><span class="legend-color" style="background:#ed8936"></span> 财富管理 <strong>20%</strong></li>
+                                        <li><span class="legend-color" style="background:#f56565"></span> 其他 <strong>10%</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 下部状态区 -->
+                    <div class="dashboard-status-row">
+                        <div class="status-card">
+                            <div class="status-card-header">
+                                <h4 class="status-card-title">
+                                    <i class="fas fa-bell" style="color:#ed8936"></i>
+                                    实时预警
+                                </h4>
+                                <span class="status-badge danger">3</span>
+                            </div>
+                            <ul class="status-list">
+                                <li class="status-item status-danger">
+                                    <span class="status-dot"></span>
+                                    <div class="status-item-content">
+                                        <div class="status-item-title">某分行不良贷款率超阈值</div>
+                                        <div class="status-item-meta">5分钟前 · 风险指标</div>
+                                    </div>
+                                </li>
+                                <li class="status-item status-warning">
+                                    <span class="status-dot"></span>
+                                    <div class="status-item-content">
+                                        <div class="status-item-title">流动性比率接近预警线</div>
+                                        <div class="status-item-meta">15分钟前 · 流动性</div>
+                                    </div>
+                                </li>
+                                <li class="status-item status-warning">
+                                    <span class="status-dot"></span>
+                                    <div class="status-item-content">
+                                        <div class="status-item-title">数据质量检查发现5条异常</div>
+                                        <div class="status-item-meta">1小时前 · 质量</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="status-card">
+                            <div class="status-card-header">
+                                <h4 class="status-card-title">
+                                    <i class="fas fa-tasks" style="color:#667eea"></i>
+                                    待办任务
+                                </h4>
+                                <span class="status-badge primary">5</span>
+                            </div>
+                            <ul class="status-list">
+                                <li class="status-item">
+                                    <span class="status-dot"></span>
+                                    <div class="status-item-content">
+                                        <div class="status-item-title">审批: 成本收入比指标发布</div>
+                                        <div class="status-item-meta">赵六 提交 · 等待中</div>
+                                    </div>
+                                </li>
+                                <li class="status-item">
+                                    <span class="status-dot"></span>
+                                    <div class="status-item-content">
+                                        <div class="status-item-title">审批: 存贷比指标上线</div>
+                                        <div class="status-item-meta">李四 提交 · 等待中</div>
+                                    </div>
+                                </li>
+                                <li class="status-item">
+                                    <span class="status-dot"></span>
+                                    <div class="status-item-content">
+                                        <div class="status-item-title">权限申请: 客户流失率指标</div>
+                                        <div class="status-item-meta">王五 申请 · 待审批</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="status-card">
+                            <div class="status-card-header">
+                                <h4 class="status-card-title">
+                                    <i class="fas fa-chart-bar" style="color:#48bb78"></i>
+                                    指标健康度
+                                </h4>
+                                <span class="status-badge success">良好</span>
+                            </div>
+                            <div class="health-overview">
+                                <div class="health-item">
+                                    <div class="health-circle health-excellent" style="--p:85">
+                                        <span>85%</span>
+                                    </div>
+                                    <div class="health-label">原子指标</div>
+                                </div>
+                                <div class="health-item">
+                                    <div class="health-circle health-good" style="--p:72">
+                                        <span>72%</span>
+                                    </div>
+                                    <div class="health-label">派生指标</div>
+                                </div>
+                                <div class="health-item">
+                                    <div class="health-circle health-normal" style="--p:55">
+                                        <span>55%</span>
+                                    </div>
+                                    <div class="health-label">复合指标</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部指标快览 -->
+                    <div class="dashboard-quick-row">
+                        <div class="quick-card">
+                            <div class="quick-card-header">
+                                <span class="quick-label">净利润率</span>
+                                <span class="quick-trend up">+1.2%</span>
+                            </div>
+                            <div class="quick-value">15.2%</div>
+                            <div class="quick-bar"><div class="quick-bar-fill" style="width:76%; background:linear-gradient(90deg,#667eea,#764ba2)"></div></div>
+                        </div>
+                        <div class="quick-card">
+                            <div class="quick-card-header">
+                                <span class="quick-label">不良贷款率</span>
+                                <span class="quick-trend down">+0.3%</span>
+                            </div>
+                            <div class="quick-value">1.8%</div>
+                            <div class="quick-bar"><div class="quick-bar-fill" style="width:18%; background:linear-gradient(90deg,#f56565,#ed8936)"></div></div>
+                        </div>
+                        <div class="quick-card">
+                            <div class="quick-card-header">
+                                <span class="quick-label">ROE</span>
+                                <span class="quick-trend up">+0.5%</span>
+                            </div>
+                            <div class="quick-value">12.8%</div>
+                            <div class="quick-bar"><div class="quick-bar-fill" style="width:64%; background:linear-gradient(90deg,#48bb78,#38a169)"></div></div>
+                        </div>
+                        <div class="quick-card">
+                            <div class="quick-card-header">
+                                <span class="quick-label">流动性比率</span>
+                                <span class="quick-trend up">+3.2%</span>
+                            </div>
+                            <div class="quick-value">58.6%</div>
+                            <div class="quick-bar"><div class="quick-bar-fill" style="width:58%; background:linear-gradient(90deg,#4299e1,#3182ce)"></div></div>
+                        </div>
+                        <div class="quick-card">
+                            <div class="quick-card-header">
+                                <span class="quick-label">保费收入(亿)</span>
+                                <span class="quick-trend up">+15.3%</span>
+                            </div>
+                            <div class="quick-value">320</div>
+                            <div class="quick-bar"><div class="quick-bar-fill" style="width:80%; background:linear-gradient(90deg,#ed8936,#dd6b20)"></div></div>
+                        </div>
+                        <div class="quick-card">
+                            <div class="quick-card-header">
+                                <span class="quick-label">成本收入比</span>
+                                <span class="quick-trend down">-2.0%</span>
+                            </div>
+                            <div class="quick-value">28.5%</div>
+                            <div class="quick-bar"><div class="quick-bar-fill" style="width:28%; background:linear-gradient(90deg,#9f7aea,#805ad5)"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 指标体系页面 -->
+                <div id="page-system" class="page-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-star" style="margin-right: 8px;"></i>
+                                北极星指标
+                            </h2>
+                        </div>
+                        <div class="north-star-grid" id="north-star-grid"></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-sitemap" style="margin-right: 8px;"></i>
+                                指标树
+                            </h2>
+                        </div>
+                        <ul class="metric-tree" id="metric-tree"></ul>
+                    </div>
+                </div>
+
+                <!-- 指标中心页面 -->
+                <div id="page-center" class="page-section" style="display: none;">
+                    <div class="category-nav" id="category-nav">
+                        <div class="category-nav-item active" data-category="all" onclick="switchCategory('all', this)">
+                            <i class="fas fa-th"></i>
+                            <span>全部</span>
+                            <span class="category-nav-count" id="cat-count-all">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="profit" onclick="switchCategory('profit', this)">
+                            <i class="fas fa-chart-line"></i>
+                            <span>盈利能力</span>
+                            <span class="category-nav-count" id="cat-count-profit">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="risk" onclick="switchCategory('risk', this)">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>风险指标</span>
+                            <span class="category-nav-count" id="cat-count-risk">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="growth" onclick="switchCategory('growth', this)">
+                            <i class="fas fa-rocket"></i>
+                            <span>发展能力</span>
+                            <span class="category-nav-count" id="cat-count-growth">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="efficiency" onclick="switchCategory('efficiency', this)">
+                            <i class="fas fa-cogs"></i>
+                            <span>经营效率</span>
+                            <span class="category-nav-count" id="cat-count-efficiency">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="capital" onclick="switchCategory('capital', this)">
+                            <i class="fas fa-university"></i>
+                            <span>资本充足</span>
+                            <span class="category-nav-count" id="cat-count-capital">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="liquidity" onclick="switchCategory('liquidity', this)">
+                            <i class="fas fa-water"></i>
+                            <span>流动性</span>
+                            <span class="category-nav-count" id="cat-count-liquidity">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="market" onclick="switchCategory('market', this)">
+                            <i class="fas fa-store"></i>
+                            <span>市场表现</span>
+                            <span class="category-nav-count" id="cat-count-market">0</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title" id="center-title">指标列表</h2>
+                            <div>
+                                <span class="status-tag status-published" id="filter-status-tag" style="margin-right: 10px;"></span>
+                                <button class="btn btn-primary" onclick="showAddMetricModal()">
+                                    <i class="fas fa-plus" style="margin-right: 5px;"></i>
+                                    新增指标
+                                </button>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="metrics-table">
+                                <thead>
+                                    <tr>
+                                        <th>指标名称</th>
+                                        <th>类型</th>
+                                        <th>负责人</th>
+                                        <th>统计周期</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 指标市场页面 -->
+                <div id="page-market" class="page-section" style="display: none;">
+                    <div class="filter-bar">
+                        <input type="text" class="search-box" id="market-search" placeholder="搜索指标...">
+                        <select class="form-control form-select" id="market-category" style="width: auto;">
+                            <option value="全部">全部分类</option>
+                            <option value="客户分析">客户分析</option>
+                            <option value="产品分析">产品分析</option>
+                            <option value="渠道分析">渠道分析</option>
+                            <option value="风险管理">风险管理</option>
+                            <option value="营销分析">营销分析</option>
+                            <option value="资金管理">资金管理</option>
+                            <option value="合规管理">合规管理</option>
+                            <option value="人力资源">人力资源</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="searchMarket()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="market-grid" id="market-grid"></div>
+                </div>
+
+                <!-- 指标血缘页面 -->
+                <div id="page-bloodline" class="page-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">指标血缘视图</h2>
+                            <select class="form-control form-select" id="bloodline-select" style="width: auto;" onchange="loadBloodline(this.value)">
+                                <option value="m001">净利润率</option>
+                                <option value="m002">ROE</option>
+                                <option value="m005">不良贷款率</option>
+                                <option value="m006">拨备覆盖率</option>
+                                <option value="m009">流动性比率</option>
+                                <option value="m014">中间业务收入</option>
+                                <option value="m015">保费收入</option>
+                            </select>
+                        </div>
+                        <div class="bloodline-container" id="bloodline-container"></div>
+                    </div>
+                </div>
+
+                <!-- 智能预警页面 -->
+                <div id="page-alert" class="page-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i>
+                                预警规则
+                            </h2>
+                        </div>
+                        <ul class="alert-list" id="alert-list"></ul>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-check-circle" style="margin-right: 8px;"></i>
+                                质量检查
+                            </h2>
+                            <button class="btn btn-primary btn-sm" onclick="showQualityRuleConfig()">
+                                <i class="fas fa-cog"></i> 配置规则
+                            </button>
+                        </div>
+                        <div class="quality-grid" id="quality-grid"></div>
+                    </div>
+                </div>
+
+                <!-- 智能应用页面 -->
+                <div id="page-agent" class="page-section" style="display: none;">
+                    <div class="agent-panel">
+                        <h3 class="agent-title">智能问数助手</h3>
+                        <p class="agent-subtitle">自然语言查询指标数据</p>
+                        <div class="agent-input">
+                            <input type="text" class="agent-input-box" id="ask-input" placeholder="例如：上季度净利润趋势">
+                            <button class="agent-input-btn" onclick="submitQuestion()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div id="ask-result" style="margin-top: 20px; display: none;">
+                            <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 15px; text-align: left;">
+                                <div style="font-weight: 600; margin-bottom: 10px;">分析结果：</div>
+                                <div style="font-size: 14px; opacity: 0.95; line-height: 1.6;">
+                                    根据您的查询，上季度净利润呈现稳步增长趋势。Q1净利润为12.5亿元，Q2增长至14.2亿元，Q3达到15.8亿元。
+                                    主要增长驱动力来自于中间业务收入的持续提升以及成本控制的有效实施。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-cards">
+                        <div class="agent-card" onclick="showReportModal()">
+                            <div class="agent-card-icon">
+                                <i class="fas fa-file-chart-pie"></i>
+                            </div>
+                            <h4 class="agent-card-title">报告生成</h4>
+                            <p class="agent-card-desc">一键生成数据分析报告，支持多种格式导出</p>
+                        </div>
+                        <div class="agent-card">
+                            <div class="agent-card-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h4 class="agent-card-title">数据可视化</h4>
+                            <p class="agent-card-desc">自动生成图表，直观展示数据洞察</p>
+                        </div>
+                        <div class="agent-card">
+                            <div class="agent-card-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h4 class="agent-card-title">智能分析</h4>
+                            <p class="agent-card-desc">AI驱动的深度数据分析与预测</p>
+                        </div>
+                    </div>
+
+                    <div class="agent-interpretation">
+                        <div class="interpretation-header">
+                            <i class="fas fa-lightbulb"></i>
+                            <span class="interpretation-title">指标解读</span>
+                        </div>
+                        <div class="interpretation-content">
+                            <strong>综合盈利指数 (87.5%)</strong>
+                            <p style="margin-top: 10px;">
+                                当前综合盈利指数处于较高水平，同比上升2.3个百分点。
+                                主要得益于净利息收入的稳定增长和中间业务收入的快速提升。
+                                建议关注成本收入比的变化趋势，持续优化运营效率。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 指标详情弹窗 -->
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="detail-title">指标详情</h3>
+                <span class="modal-close" onclick="closeModal('detail-modal')">&times;</span>
+            </div>
+            <div class="modal-body" id="detail-content"></div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('detail-modal')">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增指标弹窗 -->
+    <div class="modal-overlay" id="add-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">新增指标</h3>
+                <span class="modal-close" onclick="closeModal('add-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">指标名称</label>
+                    <input type="text" class="form-control" id="add-name" placeholder="请输入指标名称">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">指标类型</label>
+                    <select class="form-control form-select" id="add-type">
+                        <option value="原子">原子指标</option>
+                        <option value="派生">派生指标</option>
+                        <option value="复合">复合指标</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">业务口径</label>
+                    <textarea class="form-control" id="add-caliber" rows="3" placeholder="请输入业务口径描述"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">技术字段</label>
+                    <input type="text" class="form-control" id="add-field" placeholder="请输入技术字段路径">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">统计周期</label>
+                    <select class="form-control form-select" id="add-cycle">
+                        <option value="日度">日度</option>
+                        <option value="周度">周度</option>
+                        <option value="月度">月度</option>
+                        <option value="季度">季度</option>
+                        <option value="年度">年度</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">负责人</label>
+                    <input type="text" class="form-control" id="add-owner" placeholder="请输入负责人姓名">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">业务限定</label>
+                    <input type="text" class="form-control" id="add-limit" placeholder="请输入业务限定条件">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('add-modal')">取消</button>
+                <button class="btn btn-primary" onclick="submitAddMetric()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 报告生成弹窗 -->
+    <div class="modal-overlay" id="report-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">生成报告</h3>
+                <span class="modal-close" onclick="closeModal('report-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">报告名称</label>
+                    <input type="text" class="form-control" placeholder="自动生成">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">报告类型</label>
+                    <select class="form-control form-select">
+                        <option>日报</option>
+                        <option>周报</option>
+                        <option>月报</option>
+                        <option>季报</option>
+                        <option>年报</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">包含指标</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <label style="display: flex; align-items: center; padding: 5px 10px; background: #f0f4f8; border-radius: 6px;">
+                            <input type="checkbox" checked style="margin-right: 5px;"> 净利润率
+                        </label>
+                        <label style="display: flex; align-items: center; padding: 5px 10px; background: #f0f4f8; border-radius: 6px;">
+                            <input type="checkbox" checked style="margin-right: 5px;"> 不良贷款率
+                        </label>
+                        <label style="display: flex; align-items: center; padding: 5px 10px; background: #f0f4f8; border-radius: 6px;">
+                            <input type="checkbox" style="margin-right: 5px;"> ROE
+                        </label>
+                        <label style="display: flex; align-items: center; padding: 5px 10px; background: #f0f4f8; border-radius: 6px;">
+                            <input type="checkbox" style="margin-right: 5px;"> 流动性比率
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">导出格式</label>
+                    <select class="form-control form-select">
+                        <option>PDF</option>
+                        <option>Excel</option>
+                        <option>Word</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('report-modal')">取消</button>
+                <button class="btn btn-primary" onclick="generateReport()">生成报告</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 数据预览弹窗 -->
+    <div class="modal-overlay" id="data-preview-modal">
+        <div class="modal" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="data-preview-title">数据预览</h3>
+                <span class="modal-close" onclick="closeModal('data-preview-modal')">&times;</span>
+            </div>
+            <div class="modal-body" id="data-preview-content">
+                <!-- 数据内容动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 质量检查详情弹窗 -->
+    <div class="modal-overlay" id="quality-detail-modal">
+        <div class="modal" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="quality-detail-title">质量检查详情</h3>
+                <span class="modal-close" onclick="closeModal('quality-detail-modal')">&times;</span>
+            </div>
+            <div class="modal-body" id="quality-detail-content">
+                <!-- 详情内容动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 质量规则配置弹窗 -->
+    <div class="modal-overlay" id="quality-config-modal">
+        <div class="modal" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3 class="modal-title">质量检查规则配置</h3>
+                <span class="modal-close" onclick="closeModal('quality-config-modal')">&times;</span>
+            </div>
+            <div class="modal-body" id="quality-config-content">
+                <!-- 配置内容动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 当前页面
+        let currentPage = 'system';
+
+        // 显示页面
+        function showPage(page) {
+            // 更新菜单状态
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // 隐藏所有页面
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // 显示当前页面
+            document.getElementById('page-' + page).style.display = 'block';
+
+            // 更新标题
+            const titles = {
+                'system': '指标体系',
+                'center': '指标中心',
+                'market': '指标市场',
+                'bloodline': '指标血缘',
+                'alert': '智能预警',
+                'agent': '智能应用'
+            };
+            document.getElementById('page-title').textContent = titles[page];
+
+            // 加载数据
+            currentPage = page;
+            if (page === 'system') loadSystemData();
+            else if (page === 'center') loadCenterData();
+            else if (page === 'market') loadMarketData();
+            else if (page === 'bloodline') loadBloodline('m005');
+            else if (page === 'alert') loadAlertData();
+        }
+
+        // 加载指标体系数据
+        function loadSystemData() {
+            // 加载北极星指标
+            fetch('/api/north_star')
+                .then(res => res.json())
+                .then(data => {
+                    const grid = document.getElementById('north-star-grid');
+                    grid.innerHTML = data.map(metric => `
+                        <div class="north-star-card">
+                            <div class="north-star-name">${metric.name}</div>
+                            <div class="north-star-value">${metric.value}${metric.unit}</div>
+                            <div class="north-star-trend ${metric.trend >= 0 ? 'up' : 'down'}">
+                                <i class="fas fa-arrow-${metric.trend >= 0 ? 'up' : 'down'}"></i>
+                                ${Math.abs(metric.trend)}%
+                            </div>
+                        </div>
+                    `).join('');
+                });
+
+            // 加载指标树
+            fetch('/api/metric_tree')
+                .then(res => res.json())
+                .then(data => {
+                    const tree = document.getElementById('metric-tree');
+                    tree.innerHTML = data.children.map(node => renderTreeNode(node)).join('');
+                });
+        }
+
+        // 渲染树节点
+        function renderTreeNode(node) {
+            const hasChildren = node.children && node.children.length > 0;
+            if (hasChildren) {
+                return `
+                    <li class="tree-node">
+                        <div class="tree-node-header" onclick="toggleTreeNode(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            <span class="tree-node-name">${node.name}</span>
+                        </div>
+                        <ul class="tree-children">
+                            ${node.children.map(child => renderTreeNode(child)).join('')}
+                        </ul>
+                    </li>
+                `;
+            } else {
+                return `
+                    <li class="tree-child-item" onclick="showMetricDetail('${node.id}')">
+                        <span class="tree-child-name">${node.name}</span>
+                        <span class="tree-child-value">${node.value}${node.unit || '%'}</span>
+                        ${node.trend !== undefined ? `
+                            <span class="tree-child-trend ${node.trend >= 0 ? 'up' : 'down'}">
+                                <i class="fas fa-arrow-${node.trend >= 0 ? 'up' : 'down'}"></i>
+                                ${Math.abs(node.trend)}%
+                            </span>
+                        ` : ''}
+                    </li>
+                `;
+            }
+        }
+
+        // 切换树节点展开/收起
+        function toggleTreeNode(el) {
+            el.classList.toggle('expanded');
+            el.nextElementSibling.classList.toggle('expanded');
+        }
+
+        // 显示指标详情
+        function showMetricDetail(metricId) {
+            fetch('/api/metric/' + metricId)
+                .then(res => res.json())
+                .then(data => {
+                    if (Object.keys(data).length > 0) {
+                        document.getElementById('detail-title').textContent = data.name;
+                        document.getElementById('detail-content').innerHTML = `
+                            <div class="detail-section">
+                                <h4 class="detail-section-title">基本信息</h4>
+                                <div class="detail-info">
+                                    <div class="detail-info-item">
+                                        <div class="detail-info-label">指标类型</div>
+                                        <div class="detail-info-value">${data.type}</div>
+                                    </div>
+                                    <div class="detail-info-item">
+                                        <div class="detail-info-label">负责人</div>
+                                        <div class="detail-info-value">${data.owner}</div>
+                                    </div>
+                                    <div class="detail-info-item">
+                                        <div class="detail-info-label">所属部门</div>
+                                        <div class="detail-info-value">${data.department}</div>
+                                    </div>
+                                    <div class="detail-info-item">
+                                        <div class="detail-info-label">统计周期</div>
+                                        <div class="detail-info-value">${data.cycle}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="detail-section">
+                                <h4 class="detail-section-title">业务口径</h4>
+                                <p style="color: #5a6c7d; line-height: 1.6;">${data.business_caliber}</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4 class="detail-section-title">技术字段</h4>
+                                <p style="color: #5a6c7d;">${data.technical_field}</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4 class="detail-section-title">数据血缘</h4>
+                                <ul class="detail-bloodline-list">
+                                    ${data.bloodline.map(item => `
+                                        <li class="detail-bloodline-item" style="cursor: pointer;" onclick="showDataPreview('${item}', '表')" title="点击查看数据">
+                                            <i class="fas fa-link"></i>
+                                            <span style="text-decoration: underline; text-decoration-style: dotted;">${item}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        `;
+                        document.getElementById('detail-modal').classList.add('show');
+                    }
+                });
+        }
+
+        // 显示数据预览
+        function showDataPreview(name, type) {
+            const title = document.getElementById('data-preview-title');
+            const content = document.getElementById('data-preview-content');
+            
+            title.textContent = `${type}：${name}`;
+            
+            // 模拟数据加载
+            const mockData = generateMockTableData(name, type);
+            
+            content.innerHTML = `
+                <div style="margin-bottom: 15px; padding: 12px; background: #f0f4f8; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="color: #5a6c7d; font-size: 13px;">数据来源：</span>
+                        <span style="font-weight: 600;">${name}</span>
+                        <span class="status-tag status-published" style="margin-left: 10px;">${type}</span>
+                    </div>
+                    <div style="font-size: 12px; color: #8898aa;">
+                        <i class="fas fa-info-circle"></i> 共 ${mockData.rows.length} 条记录
+                    </div>
+                </div>
+                <div style="overflow-x: auto; max-height: 400px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="background: #f8f9fa; position: sticky; top: 0;">
+                                ${mockData.columns.map(col => `
+                                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e0e6ed; color: #4a5568; font-weight: 600;">${col}</th>
+                                `).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${mockData.rows.map(row => `
+                                <tr style="border-bottom: 1px solid #f0f0f0;">
+                                    ${row.map(cell => `
+                                        <td style="padding: 10px; color: #2d3748;">${cell}</td>
+                                    `).join('')}
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #fff8e1; border-radius: 6px; font-size: 12px; color: #856404;">
+                    <i class="fas fa-lightbulb"></i> 提示：此页面为模拟数据预览，后续将对接真实数据源
+                </div>
+            `;
+            
+            document.getElementById('data-preview-modal').classList.add('show');
+        }
+
+        // 生成模拟表格数据
+        function generateMockTableData(name, type) {
+            // 根据表名生成不同的模拟数据
+            const dataMap = {
+                '贷款台账表': {
+                    columns: ['贷款ID', '客户ID', '贷款金额', '放款日期', '到期日期', '状态'],
+                    rows: [
+                        ['L2024001', 'C1001', '1,500,000', '2023-06-15', '2025-06-15', '正常'],
+                        ['L2024002', 'C1002', '800,000', '2023-08-20', '2024-08-20', '正常'],
+                        ['L2024003', 'C1003', '2,300,000', '2023-09-10', '2026-09-10', '正常'],
+                        ['L2024004', 'C1004', '500,000', '2023-10-05', '2024-10-05', '关注'],
+                        ['L2024005', 'C1005', '1,200,000', '2023-11-12', '2025-11-12', '正常'],
+                        ['L2024006', 'C1006', '3,000,000', '2023-12-01', '2026-12-01', '正常'],
+                        ['L2024007', 'C1007', '600,000', '2024-01-08', '2025-01-08', '次级'],
+                        ['L2024008', 'C1008', '900,000', '2024-01-15', '2025-01-15', '正常']
+                    ]
+                },
+                '贷款分类表': {
+                    columns: ['贷款ID', '分类等级', '分类日期', '分类原因'],
+                    rows: [
+                        ['L2024001', '正常', '2024-01-15', '-'],
+                        ['L2024004', '关注', '2024-01-15', '行业风险'],
+                        ['L2024007', '次级', '2024-01-15', '财务恶化'],
+                        ['L2024002', '正常', '2024-01-15', '-'],
+                        ['L2024003', '正常', '2024-01-15', '-']
+                    ]
+                },
+                '客户信息表': {
+                    columns: ['客户ID', '客户类型', '信用等级', '所属行业'],
+                    rows: [
+                        ['C1001', '企业', 'AAA', '制造业'],
+                        ['C1002', '个人', 'AA', '-'],
+                        ['C1003', '企业', 'A', '房地产'],
+                        ['C1004', '企业', 'BBB', '批发零售'],
+                        ['C1005', '个人', 'A', '-'],
+                        ['C1006', '企业', 'AA', '科技'],
+                        ['C1007', '企业', 'B', '传统制造'],
+                        ['C1008', '个人', 'AA', '-']
+                    ]
+                },
+                '利润表': {
+                    columns: ['科目', '本期金额', '上期金额', '同比变化'],
+                    rows: [
+                        ['营业收入', '158,000,000', '142,000,000', '+11.3%'],
+                        ['营业成本', '85,000,000', '78,000,000', '+9.0%'],
+                        ['各项费用', '32,000,000', '30,000,000', '+6.7%'],
+                        ['净利润', '24,000,000', '20,000,000', '+20.0%'],
+                        ['归母净利润', '20,400,000', '17,000,000', '+20.0%']
+                    ]
+                },
+                '资产负债表': {
+                    columns: ['科目', '期末余额', '期初余额', '变化幅度'],
+                    rows: [
+                        ['流动资产', '580,000,000', '520,000,000', '+11.5%'],
+                        ['非流动资产', '920,000,000', '880,000,000', '+4.5%'],
+                        ['总资产', '1,500,000,000', '1,400,000,000', '+7.1%'],
+                        ['流动负债', '420,000,000', '400,000,000', '+5.0%'],
+                        ['股东权益', '320,000,000', '300,000,000', '+6.7%']
+                    ]
+                },
+                '现金流量表': {
+                    columns: ['科目', '本期金额', '上期金额'],
+                    rows: [
+                        ['经营活动现金流', '45,000,000', '38,000,000'],
+                        ['投资活动现金流', '-15,000,000', '-12,000,000'],
+                        ['筹资活动现金流', '-8,000,000', '-6,000,000'],
+                        ['现金净增加额', '22,000,000', '20,000,000']
+                    ]
+                }
+            };
+
+            // 默认数据
+            if (dataMap[name]) {
+                return dataMap[name];
+            }
+
+            // 根据类型生成通用数据
+            if (type === '表') {
+                return {
+                    columns: ['ID', '名称', '类型', '创建时间', '状态'],
+                    rows: [
+                        ['1', name + ' 数据1', '类型A', '2024-01-10', '有效'],
+                        ['2', name + ' 数据2', '类型B', '2024-01-11', '有效'],
+                        ['3', name + ' 数据3', '类型A', '2024-01-12', '有效'],
+                        ['4', name + ' 数据4', '类型C', '2024-01-13', '审核中'],
+                        ['5', name + ' 数据5', '类型B', '2024-01-14', '有效']
+                    ]
+                };
+            } else {
+                return {
+                    columns: ['指标', '数值', '周期', '更新时间'],
+                    rows: [
+                        ['指标1', '12,500', '月度', '2024-01-15'],
+                        ['指标2', '8,300', '月度', '2024-01-15'],
+                        ['指标3', '15,600', '季度', '2024-01-15'],
+                        ['指标4', '9,200', '月度', '2024-01-15'],
+                        ['指标5', '11,800', '年度', '2024-01-15']
+                    ]
+                };
+            }
+        }
+
+        // 当前选中的分类
+        let currentCategory = 'all';
+        let allMetrics = [];
+
+        // 加载指标中心数据
+        function loadCenterData() {
+            fetch('/api/metrics')
+                .then(res => res.json())
+                .then(data => {
+                    allMetrics = data;
+                    updateCategoryCounts(data);
+                    renderCenterTable();
+                });
+        }
+
+        // 更新分类计数
+        function updateCategoryCounts(metrics) {
+            const counts = {
+                all: metrics.length,
+                profit: 0, risk: 0, growth: 0, efficiency: 0,
+                capital: 0, liquidity: 0, market: 0
+            };
+            metrics.forEach(m => {
+                if (counts[m.category] !== undefined) {
+                    counts[m.category]++;
+                }
+            });
+            Object.keys(counts).forEach(k => {
+                const el = document.getElementById('cat-count-' + k);
+                if (el) el.textContent = counts[k];
+            });
+        }
+
+        // 切换分类
+        function switchCategory(category, el) {
+            currentCategory = category;
+            document.querySelectorAll('.category-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            el.classList.add('active');
+            
+            // 更新标题
+            const titles = {
+                all: '指标列表',
+                profit: '盈利能力指标',
+                risk: '风险指标',
+                growth: '发展能力指标',
+                efficiency: '经营效率指标',
+                capital: '资本充足指标',
+                liquidity: '流动性指标',
+                market: '市场表现指标'
+            };
+            document.getElementById('center-title').textContent = titles[category] || '指标列表';
+            
+            renderCenterTable();
+        }
+
+        // 渲染指标中心表格
+        function renderCenterTable() {
+            const tbody = document.querySelector('#metrics-table tbody');
+            const filtered = currentCategory === 'all' 
+                ? allMetrics 
+                : allMetrics.filter(m => m.category === currentCategory);
+            
+            // 更新提示
+            const tag = document.getElementById('filter-status-tag');
+            tag.textContent = currentCategory === 'all' 
+                ? `共 ${filtered.length} 个指标` 
+                : `筛选：${document.querySelector('.category-nav-item.active span:nth-child(2)').textContent} (${filtered.length})`;
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#a0aec0;">该分类下暂无指标</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filtered.map(metric => `
+                <tr>
+                    <td>
+                        <span style="font-weight: 500;">${metric.name}</span>
+                    </td>
+                    <td>
+                        <span class="status-tag ${getTypeClass(metric.type)}">${metric.type}</span>
+                    </td>
+                    <td>${metric.owner}</td>
+                    <td>${metric.cycle}</td>
+                    <td>
+                        <span class="status-tag ${getStatusClass(metric.status)}">${metric.status}</span>
+                    </td>
+                    <td>
+                        ${metric.status === '已发布' ? `
+                            <button class="btn btn-warning btn-sm" onclick="toggleMetricStatus('${metric.id}')">下线</button>
+                        ` : metric.status === '已下线' ? `
+                            <button class="btn btn-success btn-sm" onclick="toggleMetricStatus('${metric.id}')">重新发布</button>
+                        ` : `
+                            <button class="btn btn-info btn-sm" onclick="approveMetric('${metric.id}')">审批</button>
+                        `}
+                        <button class="btn btn-secondary btn-sm" style="margin-left: 5px;" onclick="showMetricDetail('${metric.id}')">详情</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 审批通过
+        function approveMetric(metricId) {
+            fetch('/api/approve_metric/' + metricId, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        loadCenterData();
+                    }
+                });
+        }
+
+        function getTypeClass(type) {
+            const classes = {
+                '原子': 'status-published',
+                '派生': 'status-pending',
+                '复合': 'status-offline'
+            };
+            return classes[type] || '';
+        }
+
+        function getStatusClass(status) {
+            const classes = {
+                '已发布': 'status-published',
+                '审批中': 'status-pending',
+                '已下线': 'status-offline'
+            };
+            return classes[status] || '';
+        }
+
+        // 切换指标状态
+        function toggleMetricStatus(metricId) {
+            fetch('/api/toggle_status/' + metricId, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        loadCenterData();
+                    }
+                });
+        }
+
+        // 显示新增指标弹窗
+        function showAddMetricModal() {
+            document.getElementById('add-modal').classList.add('show');
+        }
+
+        // 提交新增指标
+        function submitAddMetric() {
+            const data = {
+                name: document.getElementById('add-name').value,
+                type: document.getElementById('add-type').value,
+                caliber: document.getElementById('add-caliber').value,
+                field: document.getElementById('add-field').value,
+                cycle: document.getElementById('add-cycle').value,
+                owner: document.getElementById('add-owner').value,
+                limit: document.getElementById('add-limit').value
+            };
+
+            fetch('/api/add_metric', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(res => res.json())
+              .then(data => {
+                  if (data.success) {
+                      closeModal('add-modal');
+                      loadCenterData();
+                  }
+              });
+        }
+
+        // 加载指标市场数据
+        function loadMarketData() {
+            fetch('/api/market')
+                .then(res => res.json())
+                .then(data => {
+                    renderMarketGrid(data);
+                });
+        }
+
+        // 渲染市场卡片
+        function renderMarketGrid(data) {
+            const grid = document.getElementById('market-grid');
+            grid.innerHTML = data.map(metric => `
+                <div class="market-card">
+                    <div class="market-card-header">
+                        <h4 class="market-card-title">${metric.name}</h4>
+                        <span class="market-category">${metric.category}</span>
+                    </div>
+                    <p class="market-card-desc">${metric.description}</p>
+                    <div class="market-card-footer">
+                        <span class="market-popularity">
+                            <i class="fas fa-star"></i>
+                            ${metric.popularity}
+                        </span>
+                        <button class="btn btn-primary btn-sm" onclick="applyPermission('${metric.id}')" 
+                                ${metric.permission !== '申请' ? 'disabled' : ''}>
+                            ${metric.permission}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 搜索市场
+        function searchMarket() {
+            const keyword = document.getElementById('market-search').value;
+            const category = document.getElementById('market-category').value;
+
+            fetch('/api/search_market', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ keyword, category })
+            }).then(res => res.json())
+              .then(data => {
+                  renderMarketGrid(data);
+              });
+        }
+
+        // 申请权限
+        function applyPermission(metricId) {
+            fetch('/api/apply_permission/' + metricId, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        loadMarketData();
+                    }
+                });
+        }
+
+        // 加载血缘数据
+        function loadBloodline(metricId) {
+            fetch('/api/bloodline/' + metricId)
+                .then(res => res.json())
+                .then(data => {
+                    if (Object.keys(data).length > 0) {
+                        document.getElementById('bloodline-container').innerHTML = `
+                            <div class="bloodline-section upstream">
+                                <h4 class="bloodline-section-title">
+                                    <i class="fas fa-arrow-up"></i>
+                                    上游数据源
+                                </h4>
+                                ${data.upstream.map(item => `
+                                    <div class="bloodline-item" style="cursor: pointer;" onclick="showDataPreview('${item.name}', '${item.type}')" title="点击查看数据">
+                                        <div class="bloodline-item-header">
+                                            <span class="bloodline-item-type">${item.type}</span>
+                                            <span class="bloodline-item-name" style="text-decoration: underline; text-decoration-style: dotted;">${item.name}</span>
+                                        </div>
+                                        ${item.fields ? `
+                                            <div class="bloodline-fields">
+                                                ${item.fields.map(field => `<span class="bloodline-field-tag">${field}</span>`).join('')}
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="bloodline-arrow">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div style="text-align: center; padding: 10px;">
+                                <div style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; font-weight: 600; cursor: pointer;" 
+                                     onclick="showMetricDetail('${metricId}')" title="点击查看指标详情">
+                                    <span style="text-decoration: underline; text-decoration-style: dotted;">${data.metric_name}</span>
+                                </div>
+                            </div>
+                            <div class="bloodline-arrow">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="bloodline-section downstream">
+                                <h4 class="bloodline-section-title">
+                                    <i class="fas fa-arrow-down"></i>
+                                    下游应用
+                                </h4>
+                                ${data.downstream.map(item => `
+                                    <div class="bloodline-item" style="cursor: pointer;" onclick="showDataPreview('${item.name}', '${item.type}')" title="点击查看数据">
+                                        <div class="bloodline-item-header">
+                                            <span class="bloodline-item-type">${item.type}</span>
+                                            <span class="bloodline-item-name" style="text-decoration: underline; text-decoration-style: dotted;">${item.name}</span>
+                                        </div>
+                                        ${item.location ? `
+                                            <div style="font-size: 12px; color: #8898aa; margin-top: 8px;">
+                                                <i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i>
+                                                ${item.location}
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                });
+        }
+
+        // 加载预警数据
+        function loadAlertData() {
+            // 加载预警规则
+            fetch('/api/alerts')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('alert-list');
+                    list.innerHTML = data.map(alert => `
+                        <li class="alert-item">
+                            <div>
+                                <div class="alert-name">${alert.name}</div>
+                                <div class="alert-condition">${alert.condition}</div>
+                            </div>
+                            <div class="alert-meta">
+                                <span class="severity-tag severity-${alert.severity.toLowerCase()}">${alert.severity}</span>
+                                <span class="status-tag ${alert.status === '启用' ? 'status-published' : 'status-offline'}">${alert.status}</span>
+                            </div>
+                        </li>
+                    `).join('');
+                });
+
+            // 加载质量检查
+            fetch('/api/quality')
+                .then(res => res.json())
+                .then(data => {
+                    const grid = document.getElementById('quality-grid');
+                    grid.innerHTML = data.map(item => `
+                        <div class="quality-card" style="cursor: pointer;" onclick="showQualityDetail('${item.id}')" title="点击查看详情">
+                            <div class="quality-card-header">
+                                <span class="quality-metric-name">${item.metric_name}</span>
+                                <span class="quality-status ${getStatusClassForQuality(item.status)}">${item.status}</span>
+                            </div>
+                            <div class="quality-item">
+                                <span class="quality-item-label">完整性</span>
+                                <span class="quality-item-value">${item.completeness}%</span>
+                            </div>
+                            <div class="quality-bar-container">
+                                <div class="quality-bar ${getStatusClassForQuality(item.status)}" style="width: ${item.completeness}%"></div>
+                            </div>
+                            <div class="quality-item">
+                                <span class="quality-item-label">一致性</span>
+                                <span class="quality-item-value">${item.consistency}%</span>
+                            </div>
+                            <div class="quality-bar-container">
+                                <div class="quality-bar ${getStatusClassForQuality(item.status)}" style="width: ${item.consistency}%"></div>
+                            </div>
+                            <div class="quality-item">
+                                <span class="quality-item-label">及时性</span>
+                                <span class="quality-item-value">${item.timeliness}%</span>
+                            </div>
+                            <div class="quality-bar-container">
+                                <div class="quality-bar ${getStatusClassForQuality(item.status)}" style="width: ${item.timeliness}%"></div>
+                            </div>
+                            <div class="quality-item">
+                                <span class="quality-item-label">准确性</span>
+                                <span class="quality-item-value">${item.accuracy}%</span>
+                            </div>
+                            <div class="quality-bar-container">
+                                <div class="quality-bar ${getStatusClassForQuality(item.status)}" style="width: ${item.accuracy}%"></div>
+                            </div>
+                        </div>
+                    `).join('');
+                });
+        }
+
+        function getStatusClassForQuality(status) {
+            const classes = {
+                '优秀': 'excellent',
+                '良好': 'good',
+                '一般': 'normal',
+                '待优化': 'poor'
+            };
+            return classes[status] || 'normal';
+        }
+
+        // 显示质量检查详情
+        function showQualityDetail(qualityId) {
+            fetch('/api/quality')
+                .then(res => res.json())
+                .then(data => {
+                    const item = data.find(q => q.id === qualityId);
+                    if (!item) return;
+                    
+                    const title = document.getElementById('quality-detail-title');
+                    const content = document.getElementById('quality-detail-content');
+                    
+                    title.textContent = `质量检查详情 - ${item.metric_name}`;
+                    
+                    // 生成详细问题列表
+                    const issues = generateQualityIssues(item);
+                    
+                    content.innerHTML = `
+                        <div style="margin-bottom: 20px; padding: 15px; background: #f0f4f8; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 16px; font-weight: 600; color: #2d3748;">${item.metric_name}</div>
+                                <div style="font-size: 12px; color: #8898aa; margin-top: 4px;">检查时间：2024-01-15 10:30:00</div>
+                            </div>
+                            <span class="quality-status ${getStatusClassForQuality(item.status)}">${item.status}</span>
+                        </div>
+                        
+                        <h4 style="font-size: 14px; font-weight: 600; color: #2d3748; margin-bottom: 12px;">
+                            <i class="fas fa-chart-bar" style="color: #667eea; margin-right: 6px;"></i>
+                            质量指标评分
+                        </h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                            ${renderQualityMetric('完整性', item.completeness, '检查字段值是否非空')}
+                            ${renderQualityMetric('一致性', item.consistency, '检查跨表数据是否一致')}
+                            ${renderQualityMetric('及时性', item.timeliness, '检查数据更新是否及时')}
+                            ${renderQualityMetric('准确性', item.accuracy, '检查数据计算是否准确')}
+                        </div>
+                        
+                        <h4 style="font-size: 14px; font-weight: 600; color: #2d3748; margin-bottom: 12px;">
+                            <i class="fas fa-exclamation-circle" style="color: #ed8936; margin-right: 6px;"></i>
+                            质量问题清单 (${issues.length})
+                        </h4>
+                        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; max-height: 200px; overflow-y: auto;">
+                            ${issues.length > 0 ? issues.map(issue => `
+                                <div style="padding: 12px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: flex-start; gap: 10px;">
+                                    <i class="fas fa-${issue.severity === 'high' ? 'times-circle' : 'exclamation-circle'}" 
+                                       style="color: ${issue.severity === 'high' ? '#f56565' : '#ed8936'}; margin-top: 2px;"></i>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; color: #2d3748; font-size: 13px;">${issue.title}</div>
+                                        <div style="font-size: 12px; color: #718096; margin-top: 4px;">${issue.description}</div>
+                                        <div style="font-size: 11px; color: #a0aec0; margin-top: 4px;">
+                                            <i class="fas fa-clock"></i> ${issue.time}
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('') : '<div style="padding: 20px; text-align: center; color: #48bb78;"><i class="fas fa-check-circle"></i> 暂无质量问题</div>'}
+                        </div>
+                        
+                        <h4 style="font-size: 14px; font-weight: 600; color: #2d3748; margin: 20px 0 12px;">
+                            <i class="fas fa-history" style="color: #667eea; margin-right: 6px;"></i>
+                            检查历史趋势
+                        </h4>
+                        <div style="background: #f9fafb; border-radius: 8px; padding: 15px;">
+                            <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 100px; gap: 8px;">
+                                ${generateQualityTrend(item)}
+                            </div>
+                            <div style="display: flex; justify-content: space-around; margin-top: 8px; font-size: 11px; color: #8898aa;">
+                                <span>7天前</span><span>6天前</span><span>5天前</span><span>4天前</span><span>3天前</span><span>2天前</span><span>今天</span>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                            <button class="btn btn-secondary" onclick="closeModal('quality-detail-modal')">关闭</button>
+                            <button class="btn btn-primary" onclick="exportQualityReport('${qualityId}')">
+                                <i class="fas fa-download"></i> 导出报告
+                            </button>
+                        </div>
+                    `;
+                    
+                    document.getElementById('quality-detail-modal').classList.add('show');
+                });
+        }
+
+        // 渲染质量指标
+        function renderQualityMetric(name, value, desc) {
+            const color = value >= 95 ? '#48bb78' : value >= 90 ? '#667eea' : value >= 85 ? '#ed8936' : '#f56565';
+            return `
+                <div style="padding: 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-size: 13px; color: #4a5568; font-weight: 600;">${name}</span>
+                        <span style="font-size: 16px; font-weight: 700; color: ${color};">${value}%</span>
+                    </div>
+                    <div style="height: 4px; background: #edf2f7; border-radius: 2px; overflow: hidden;">
+                        <div style="height: 100%; width: ${value}%; background: ${color}; border-radius: 2px;"></div>
+                    </div>
+                    <div style="font-size: 11px; color: #a0aec0; margin-top: 6px;">${desc}</div>
+                </div>
+            `;
+        }
+
+        // 生成质量问题
+        function generateQualityIssues(item) {
+            const issues = [];
+            if (item.completeness < 95) {
+                issues.push({
+                    severity: item.completeness < 90 ? 'high' : 'medium',
+                    title: '数据完整性不足',
+                    description: `检测到 ${(100 - item.completeness).toFixed(1)}% 的记录存在空值，建议补充数据源`,
+                    time: '2024-01-15 08:00:00'
+                });
+            }
+            if (item.consistency < 95) {
+                issues.push({
+                    severity: 'medium',
+                    title: '跨表数据不一致',
+                    description: '部分计算结果与源表数据存在偏差，建议检查 ETL 流程',
+                    time: '2024-01-15 06:00:00'
+                });
+            }
+            if (item.timeliness < 95) {
+                issues.push({
+                    severity: 'high',
+                    title: '数据更新延迟',
+                    description: '数据更新时间晚于预期，可能影响业务决策',
+                    time: '2024-01-15 04:00:00'
+                });
+            }
+            if (item.accuracy < 95) {
+                issues.push({
+                    severity: 'medium',
+                    title: '数据准确性待提升',
+                    description: '部分计算逻辑可能需要优化',
+                    time: '2024-01-14 22:00:00'
+                });
+            }
+            return issues;
+        }
+
+        // 生成质量趋势
+        function generateQualityTrend(item) {
+            const avg = (item.completeness + item.consistency + item.timeliness + item.accuracy) / 4;
+            const trend = [];
+            for (let i = 0; i < 7; i++) {
+                const variation = (Math.random() - 0.5) * 5;
+                const value = Math.max(80, Math.min(100, avg + variation));
+                trend.push(value);
+            }
+            return trend.map((v, i) => `
+                <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
+                    <div style="width: 100%; background: linear-gradient(180deg, #667eea 0%, #764ba2 100%); height: ${v - 70}px; border-radius: 4px 4px 0 0; min-height: 10px;"></div>
+                    <div style="font-size: 10px; color: #4a5568; margin-top: 4px; font-weight: 600;">${v.toFixed(1)}%</div>
+                </div>
+            `).join('');
+        }
+
+        // 导出质量报告
+        function exportQualityReport(qualityId) {
+            alert('质量检查报告已生成，请查看下载文件夹');
+        }
+
+        // 显示质量规则配置
+        function showQualityRuleConfig() {
+            const content = document.getElementById('quality-config-content');
+            content.innerHTML = `
+                <div style="margin-bottom: 20px; padding: 12px; background: #f0f4f8; border-radius: 6px; font-size: 13px; color: #4a5568;">
+                    <i class="fas fa-info-circle" style="color: #667eea; margin-right: 6px;"></i>
+                    配置质量检查规则的阈值和检查项，规则变更将实时生效
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">完整性阈值 (%)</label>
+                    <input type="number" class="form-control" value="95" min="0" max="100">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">一致性阈值 (%)</label>
+                    <input type="number" class="form-control" value="95" min="0" max="100">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">及时性阈值 (%)</label>
+                    <input type="number" class="form-control" value="90" min="0" max="100">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">准确性阈值 (%)</label>
+                    <input type="number" class="form-control" value="95" min="0" max="100">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">检查频率</label>
+                    <select class="form-control form-select">
+                        <option>每小时</option>
+                        <option selected>每天</option>
+                        <option>每周</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">检查范围</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <label style="display: flex; align-items: center; padding: 5px 10px; background: #f0f4f8; border-radius: 6px;">
+                            <input type="checkbox" checked style="margin-right: 5px;"> 原子指标
+                        </label>
+                        <label style="display: flex; align-items: center; padding: 5px 10px; background: #f0f4f8; border-radius: 6px;">
+                            <input type="checkbox" checked style="margin-right: 5px;"> 派生指标
+                        </label>
+                        <label style="display: flex; align-items: center; padding: 5px 10px; background: #f0f4f8; border-radius: 6px;">
+                            <input type="checkbox" style="margin-right: 5px;"> 复合指标
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">异常通知</label>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label style="display: flex; align-items: center; font-size: 13px;">
+                            <input type="checkbox" checked style="margin-right: 8px;"> 邮件通知
+                        </label>
+                        <label style="display: flex; align-items: center; font-size: 13px;">
+                            <input type="checkbox" checked style="margin-right: 8px;"> 钉钉/企业微信
+                        </label>
+                        <label style="display: flex; align-items: center; font-size: 13px;">
+                            <input type="checkbox" style="margin-right: 8px;"> 短信通知
+                        </label>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button class="btn btn-secondary" onclick="closeModal('quality-config-modal')">取消</button>
+                    <button class="btn btn-primary" onclick="saveQualityConfig()">保存配置</button>
+                </div>
+            `;
+            document.getElementById('quality-config-modal').classList.add('show');
+        }
+
+        // 保存质量配置
+        function saveQualityConfig() {
+            alert('质量检查规则配置已保存');
+            closeModal('quality-config-modal');
+        }
+
+        // 智能问数
+        function submitQuestion() {
+            const input = document.getElementById('ask-input');
+            if (input.value.trim()) {
+                document.getElementById('ask-result').style.display = 'block';
+            }
+        }
+
+        // 显示报告生成弹窗
+        function showReportModal() {
+            document.getElementById('report-modal').classList.add('show');
+        }
+
+        // 生成报告
+        function generateReport() {
+            closeModal('report-modal');
+            alert('报告生成成功！');
+        }
+
+        // 关闭弹窗
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+            // 重置表单
+            if (modalId === 'add-modal') {
+                document.querySelectorAll('#add-modal .form-control').forEach(input => {
+                    input.value = '';
+                });
+            }
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSystemData();
+        });
+    </script>
+</body>
+</html>
