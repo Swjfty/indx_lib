@@ -75,6 +75,8 @@ def api_market():
 @app.route('/api/bloodline/<metric_id>')
 def api_bloodline(metric_id):
     bloodline = get_bloodline_data()
+    if metric_id == 'all':
+        return jsonify(bloodline)
     return jsonify(bloodline.get(metric_id, {}))
 
 @app.route('/api/alerts')
@@ -113,18 +115,6 @@ def api_toggle_status(metric_id):
                 metric['status'] = '已下线'
             elif metric['status'] == '已下线':
                 metric['status'] = '审批中'
-            data['metrics_list'] = metrics_list
-            save_data(data)
-            return jsonify({"success": True, "status": metric['status']})
-    return jsonify({"success": False})
-
-@app.route('/api/approve_metric/<metric_id>', methods=['POST'])
-def api_approve_metric(metric_id):
-    metrics_list = get_metrics_list()
-    for metric in metrics_list:
-        if metric['id'] == metric_id:
-            if metric['status'] == '审批中':
-                metric['status'] = '已发布'
             data['metrics_list'] = metrics_list
             save_data(data)
             return jsonify({"success": True, "status": metric['status']})
