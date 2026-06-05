@@ -120,6 +120,18 @@ def api_toggle_status(metric_id):
             return jsonify({"success": True, "status": metric['status']})
     return jsonify({"success": False})
 
+@app.route('/api/approve_metric/<metric_id>', methods=['POST'])
+def api_approve_metric(metric_id):
+    metrics_list = get_metrics_list()
+    for metric in metrics_list:
+        if metric['id'] == metric_id:
+            if metric['status'] == '审批中':
+                metric['status'] = '已发布'
+            data['metrics_list'] = metrics_list
+            save_data(data)
+            return jsonify({"success": True, "status": metric['status']})
+    return jsonify({"success": False})
+
 @app.route('/api/search_market', methods=['POST'])
 def api_search_market():
     req_data = request.json

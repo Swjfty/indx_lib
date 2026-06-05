@@ -329,13 +329,58 @@
 
                 <!-- 指标中心页面 -->
                 <div id="page-center" class="page-section" style="display: none;">
+                    <div class="category-nav" id="category-nav">
+                        <div class="category-nav-item active" data-category="all" onclick="switchCategory('all', this)">
+                            <i class="fas fa-th"></i>
+                            <span>全部</span>
+                            <span class="category-nav-count" id="cat-count-all">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="profit" onclick="switchCategory('profit', this)">
+                            <i class="fas fa-chart-line"></i>
+                            <span>盈利能力</span>
+                            <span class="category-nav-count" id="cat-count-profit">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="risk" onclick="switchCategory('risk', this)">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>风险指标</span>
+                            <span class="category-nav-count" id="cat-count-risk">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="growth" onclick="switchCategory('growth', this)">
+                            <i class="fas fa-rocket"></i>
+                            <span>发展能力</span>
+                            <span class="category-nav-count" id="cat-count-growth">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="efficiency" onclick="switchCategory('efficiency', this)">
+                            <i class="fas fa-cogs"></i>
+                            <span>经营效率</span>
+                            <span class="category-nav-count" id="cat-count-efficiency">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="capital" onclick="switchCategory('capital', this)">
+                            <i class="fas fa-university"></i>
+                            <span>资本充足</span>
+                            <span class="category-nav-count" id="cat-count-capital">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="liquidity" onclick="switchCategory('liquidity', this)">
+                            <i class="fas fa-water"></i>
+                            <span>流动性</span>
+                            <span class="category-nav-count" id="cat-count-liquidity">0</span>
+                        </div>
+                        <div class="category-nav-item" data-category="market" onclick="switchCategory('market', this)">
+                            <i class="fas fa-store"></i>
+                            <span>市场表现</span>
+                            <span class="category-nav-count" id="cat-count-market">0</span>
+                        </div>
+                    </div>
                     <div class="card">
                         <div class="card-header">
-                            <h2 class="card-title">指标列表</h2>
-                            <button class="btn btn-primary" onclick="showAddMetricModal()">
-                                <i class="fas fa-plus" style="margin-right: 5px;"></i>
-                                新增指标
-                            </button>
+                            <h2 class="card-title" id="center-title">指标列表</h2>
+                            <div>
+                                <span class="status-tag status-published" id="filter-status-tag" style="margin-right: 10px;"></span>
+                                <button class="btn btn-primary" onclick="showAddMetricModal()">
+                                    <i class="fas fa-plus" style="margin-right: 5px;"></i>
+                                    新增指标
+                                </button>
+                            </div>
                         </div>
                         <div class="table-container">
                             <table class="data-table" id="metrics-table">
@@ -987,33 +1032,116 @@
             }
         }
 
+        // 当前选中的分类
+        let currentCategory = 'all';
+        let allMetrics = [];
+
         // 加载指标中心数据
         function loadCenterData() {
             fetch('/api/metrics')
                 .then(res => res.json())
                 .then(data => {
-                    const tbody = document.querySelector('#metrics-table tbody');
-                    tbody.innerHTML = data.map(metric => `
-                        <tr>
-                            <td>${metric.name}</td>
-                            <td>
-                                <span class="status-tag ${getTypeClass(metric.type)}">${metric.type}</span>
-                            </td>
-                            <td>${metric.owner}</td>
-                            <td>${metric.cycle}</td>
-                            <td>
-                                <span class="status-tag ${getStatusClass(metric.status)}">${metric.status}</span>
-                            </td>
-                            <td>
-                                ${metric.status === '已发布' ? `
-                                    <button class="btn btn-warning btn-sm" onclick="toggleMetricStatus('${metric.id}')">下线</button>
-                                ` : metric.status === '已下线' ? `
-                                    <button class="btn btn-success btn-sm" onclick="toggleMetricStatus('${metric.id}')">重新发布</button>
-                                ` : ''}
-                                <button class="btn btn-secondary btn-sm" style="margin-left: 5px;" onclick="showMetricDetail('${metric.id}')">详情</button>
-                            </td>
-                        </tr>
-                    `).join('');
+                    allMetrics = data;
+                    updateCategoryCounts(data);
+                    renderCenterTable();
+                });
+        }
+
+        // 更新分类计数
+        function updateCategoryCounts(metrics) {
+            const counts = {
+                all: metrics.length,
+                profit: 0, risk: 0, growth: 0, efficiency: 0,
+                capital: 0, liquidity: 0, market: 0
+            };
+            metrics.forEach(m => {
+                if (counts[m.category] !== undefined) {
+                    counts[m.category]++;
+                }
+            });
+            Object.keys(counts).forEach(k => {
+                const el = document.getElementById('cat-count-' + k);
+                if (el) el.textContent = counts[k];
+            });
+        }
+
+        // 切换分类
+        function switchCategory(category, el) {
+            currentCategory = category;
+            document.querySelectorAll('.category-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            el.classList.add('active');
+            
+            // 更新标题
+            const titles = {
+                all: '指标列表',
+                profit: '盈利能力指标',
+                risk: '风险指标',
+                growth: '发展能力指标',
+                efficiency: '经营效率指标',
+                capital: '资本充足指标',
+                liquidity: '流动性指标',
+                market: '市场表现指标'
+            };
+            document.getElementById('center-title').textContent = titles[category] || '指标列表';
+            
+            renderCenterTable();
+        }
+
+        // 渲染指标中心表格
+        function renderCenterTable() {
+            const tbody = document.querySelector('#metrics-table tbody');
+            const filtered = currentCategory === 'all' 
+                ? allMetrics 
+                : allMetrics.filter(m => m.category === currentCategory);
+            
+            // 更新提示
+            const tag = document.getElementById('filter-status-tag');
+            tag.textContent = currentCategory === 'all' 
+                ? `共 ${filtered.length} 个指标` 
+                : `筛选：${document.querySelector('.category-nav-item.active span:nth-child(2)').textContent} (${filtered.length})`;
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#a0aec0;">该分类下暂无指标</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filtered.map(metric => `
+                <tr>
+                    <td>
+                        <span style="font-weight: 500;">${metric.name}</span>
+                    </td>
+                    <td>
+                        <span class="status-tag ${getTypeClass(metric.type)}">${metric.type}</span>
+                    </td>
+                    <td>${metric.owner}</td>
+                    <td>${metric.cycle}</td>
+                    <td>
+                        <span class="status-tag ${getStatusClass(metric.status)}">${metric.status}</span>
+                    </td>
+                    <td>
+                        ${metric.status === '已发布' ? `
+                            <button class="btn btn-warning btn-sm" onclick="toggleMetricStatus('${metric.id}')">下线</button>
+                        ` : metric.status === '已下线' ? `
+                            <button class="btn btn-success btn-sm" onclick="toggleMetricStatus('${metric.id}')">重新发布</button>
+                        ` : `
+                            <button class="btn btn-info btn-sm" onclick="approveMetric('${metric.id}')">审批</button>
+                        `}
+                        <button class="btn btn-secondary btn-sm" style="margin-left: 5px;" onclick="showMetricDetail('${metric.id}')">详情</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 审批通过
+        function approveMetric(metricId) {
+            fetch('/api/approve_metric/' + metricId, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        loadCenterData();
+                    }
                 });
         }
 
@@ -1135,26 +1263,26 @@
                 });
         }
 
-        // 引力图全局变量
-        let bloodlineCanvas = null;
+        // 全局变量
         let bloodlineCtx = null;
         let bloodlineNodes = [];
         let bloodlineLinks = [];
+        let bloodlineData = {};
         let animationId = null;
         let selectedNode = null;
-        let bloodlineData = null;
-        let isMultiMode = false;
-        let scale = 1;
-        let offsetX = 0;
-        let offsetY = 0;
+        let draggingNode = null;
+        let dragNodeOffsetX = 0;
+        let dragNodeOffsetY = 0;
         let isDragging = false;
         let dragStartX = 0;
         let dragStartY = 0;
         let dragOffsetX = 0;
         let dragOffsetY = 0;
-        let draggingNode = null;
-        let dragNodeOffsetX = 0;
-        let dragNodeOffsetY = 0;
+        let scale = 1;
+        let offsetX = 0;
+        let offsetY = 0;
+        let isMultiMode = false;
+        let hasMoved = false;
 
         // 加载血缘数据
         function loadBloodline(metricId) {
@@ -1206,6 +1334,11 @@
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight;
             bloodlineCtx = canvas.getContext('2d');
+
+            // 重置缩放和平移
+            scale = 1;
+            offsetX = 0;
+            offsetY = 0;
 
             // 清空之前的数据
             bloodlineNodes = [];
@@ -1301,6 +1434,11 @@
             canvas.height = container.clientHeight * scaleFactor;
             bloodlineCtx = canvas.getContext('2d');
 
+            // 重置缩放和平移
+            scale = 0.65;
+            offsetX = 0;
+            offsetY = 0;
+
             // 清空之前的数据
             bloodlineNodes = [];
             bloodlineLinks = [];
@@ -1317,16 +1455,12 @@
 
             // 获取所有指标ID
             const metricIds = Object.keys(allData);
-            console.log('=== Multi Mode Debug ===');
-            console.log('Number of metrics:', metricIds.length);
-            console.log('Metric IDs:', metricIds);
 
             const metricCount = metricIds.length;
 
             // 为每个指标创建节点
             metricIds.forEach((metricId, index) => {
                 const data = allData[metricId];
-                console.log(`Processing metric ${index + 1}: ${metricId} - ${data.metric_name}`);
                 
                 const angle = (index / metricCount) * Math.PI * 2;
                 const distance = 100 + Math.random() * 30;
@@ -1416,9 +1550,6 @@
                     }
                 });
             });
-
-            console.log('Total nodes created:', bloodlineNodes.length);
-            console.log('Total links created:', bloodlineLinks.length);
 
             // 添加鼠标事件
             canvas.addEventListener('click', onCanvasClick);
@@ -1765,7 +1896,7 @@
             // 先检测是否点击了节点
             const clickedNode = findNodeAtPosition(worldX, worldY);
             
-            if (clickedNode && e.button === 0 && !e.shiftKey) {
+            if (clickedNode && e.button === 0) {
                 // 左键点击节点，开始拖拽节点
                 e.preventDefault();
                 draggingNode = clickedNode;
@@ -1773,14 +1904,15 @@
                 dragNodeOffsetY = worldY - clickedNode.y;
                 selectedNode = clickedNode.id;
                 showNodeInfo(clickedNode);
-            } else if (e.button === 1 || (e.button === 0 && e.shiftKey)) {
-                // 中键或Shift+左键，平移画布
+            } else if (e.button === 1 || e.button === 0) {
+                // 左键点击空白处或中键，平移画布
                 e.preventDefault();
                 isDragging = true;
                 dragStartX = e.clientX;
                 dragStartY = e.clientY;
                 dragOffsetX = offsetX;
                 dragOffsetY = offsetY;
+                hasMoved = false;
             }
         }
 
@@ -1821,6 +1953,7 @@
                 e.preventDefault();
                 offsetX = dragOffsetX + (e.clientX - dragStartX);
                 offsetY = dragOffsetY + (e.clientY - dragStartY);
+                hasMoved = true;
             }
         }
 

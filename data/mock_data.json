@@ -167,9 +167,10 @@
       "id": "m001",
       "name": "净利润率",
       "type": "派生",
-      "status": "审批中",
+      "status": "已发布",
       "owner": "张三",
       "cycle": "月度",
+      "category": "profit",
       "create_time": "2024-01-01"
     },
     {
@@ -179,6 +180,7 @@
       "status": "已发布",
       "owner": "李四",
       "cycle": "季度",
+      "category": "profit",
       "create_time": "2024-01-05"
     },
     {
@@ -188,6 +190,7 @@
       "status": "已发布",
       "owner": "王五",
       "cycle": "季度",
+      "category": "profit",
       "create_time": "2024-01-08"
     },
     {
@@ -197,6 +200,7 @@
       "status": "审批中",
       "owner": "赵六",
       "cycle": "月度",
+      "category": "profit",
       "create_time": "2024-01-10"
     },
     {
@@ -206,6 +210,7 @@
       "status": "已发布",
       "owner": "张三",
       "cycle": "月度",
+      "category": "risk",
       "create_time": "2023-12-20"
     },
     {
@@ -215,6 +220,7 @@
       "status": "已发布",
       "owner": "李四",
       "cycle": "月度",
+      "category": "risk",
       "create_time": "2023-12-15"
     },
     {
@@ -224,6 +230,7 @@
       "status": "已下线",
       "owner": "王五",
       "cycle": "季度",
+      "category": "capital",
       "create_time": "2023-11-01"
     },
     {
@@ -233,6 +240,7 @@
       "status": "已发布",
       "owner": "赵六",
       "cycle": "月度",
+      "category": "capital",
       "create_time": "2023-10-15"
     },
     {
@@ -242,6 +250,7 @@
       "status": "已发布",
       "owner": "张三",
       "cycle": "月度",
+      "category": "liquidity",
       "create_time": "2023-09-20"
     },
     {
@@ -251,6 +260,7 @@
       "status": "审批中",
       "owner": "李四",
       "cycle": "月度",
+      "category": "liquidity",
       "create_time": "2024-01-12"
     },
     {
@@ -260,6 +270,7 @@
       "status": "已发布",
       "owner": "王五",
       "cycle": "月度",
+      "category": "liquidity",
       "create_time": "2024-01-14"
     },
     {
@@ -269,6 +280,7 @@
       "status": "已发布",
       "owner": "赵六",
       "cycle": "月度",
+      "category": "growth",
       "create_time": "2024-01-13"
     },
     {
@@ -278,6 +290,7 @@
       "status": "已发布",
       "owner": "张三",
       "cycle": "月度",
+      "category": "growth",
       "create_time": "2024-01-11"
     },
     {
@@ -287,6 +300,7 @@
       "status": "已发布",
       "owner": "李四",
       "cycle": "月度",
+      "category": "growth",
       "create_time": "2024-01-09"
     },
     {
@@ -296,6 +310,7 @@
       "status": "已发布",
       "owner": "王五",
       "cycle": "月度",
+      "category": "market",
       "create_time": "2024-01-07"
     },
     {
@@ -305,6 +320,7 @@
       "status": "已发布",
       "owner": "赵六",
       "cycle": "月度",
+      "category": "efficiency",
       "create_time": "2024-01-06"
     },
     {
@@ -314,6 +330,7 @@
       "status": "已发布",
       "owner": "张三",
       "cycle": "月度",
+      "category": "efficiency",
       "create_time": "2024-01-04"
     }
   ],
