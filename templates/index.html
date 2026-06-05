@@ -329,58 +329,13 @@
 
                 <!-- 指标中心页面 -->
                 <div id="page-center" class="page-section" style="display: none;">
-                    <div class="category-nav" id="category-nav">
-                        <div class="category-nav-item active" data-category="all" onclick="switchCategory('all', this)">
-                            <i class="fas fa-th"></i>
-                            <span>全部</span>
-                            <span class="category-nav-count" id="cat-count-all">0</span>
-                        </div>
-                        <div class="category-nav-item" data-category="profit" onclick="switchCategory('profit', this)">
-                            <i class="fas fa-chart-line"></i>
-                            <span>盈利能力</span>
-                            <span class="category-nav-count" id="cat-count-profit">0</span>
-                        </div>
-                        <div class="category-nav-item" data-category="risk" onclick="switchCategory('risk', this)">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>风险指标</span>
-                            <span class="category-nav-count" id="cat-count-risk">0</span>
-                        </div>
-                        <div class="category-nav-item" data-category="growth" onclick="switchCategory('growth', this)">
-                            <i class="fas fa-rocket"></i>
-                            <span>发展能力</span>
-                            <span class="category-nav-count" id="cat-count-growth">0</span>
-                        </div>
-                        <div class="category-nav-item" data-category="efficiency" onclick="switchCategory('efficiency', this)">
-                            <i class="fas fa-cogs"></i>
-                            <span>经营效率</span>
-                            <span class="category-nav-count" id="cat-count-efficiency">0</span>
-                        </div>
-                        <div class="category-nav-item" data-category="capital" onclick="switchCategory('capital', this)">
-                            <i class="fas fa-university"></i>
-                            <span>资本充足</span>
-                            <span class="category-nav-count" id="cat-count-capital">0</span>
-                        </div>
-                        <div class="category-nav-item" data-category="liquidity" onclick="switchCategory('liquidity', this)">
-                            <i class="fas fa-water"></i>
-                            <span>流动性</span>
-                            <span class="category-nav-count" id="cat-count-liquidity">0</span>
-                        </div>
-                        <div class="category-nav-item" data-category="market" onclick="switchCategory('market', this)">
-                            <i class="fas fa-store"></i>
-                            <span>市场表现</span>
-                            <span class="category-nav-count" id="cat-count-market">0</span>
-                        </div>
-                    </div>
                     <div class="card">
                         <div class="card-header">
-                            <h2 class="card-title" id="center-title">指标列表</h2>
-                            <div>
-                                <span class="status-tag status-published" id="filter-status-tag" style="margin-right: 10px;"></span>
-                                <button class="btn btn-primary" onclick="showAddMetricModal()">
-                                    <i class="fas fa-plus" style="margin-right: 5px;"></i>
-                                    新增指标
-                                </button>
-                            </div>
+                            <h2 class="card-title">指标列表</h2>
+                            <button class="btn btn-primary" onclick="showAddMetricModal()">
+                                <i class="fas fa-plus" style="margin-right: 5px;"></i>
+                                新增指标
+                            </button>
                         </div>
                         <div class="table-container">
                             <table class="data-table" id="metrics-table">
@@ -428,6 +383,7 @@
                         <div class="card-header">
                             <h2 class="card-title">指标血缘视图</h2>
                             <select class="form-control form-select" id="bloodline-select" style="width: auto;" onchange="loadBloodline(this.value)">
+                                <option value="all" selected>全部指标</option>
                                 <option value="m001">净利润率</option>
                                 <option value="m002">ROE</option>
                                 <option value="m005">不良贷款率</option>
@@ -437,7 +393,34 @@
                                 <option value="m015">保费收入</option>
                             </select>
                         </div>
-                        <div class="bloodline-container" id="bloodline-container"></div>
+                        <div class="bloodline-content">
+                            <div class="bloodline-canvas-container">
+                                <canvas id="bloodline-canvas"></canvas>
+                                <div class="canvas-overlay" id="canvas-overlay"></div>
+                            </div>
+                            <div class="bloodline-info-panel" id="bloodline-info-panel">
+                                <div class="info-panel-header">
+                                    <h4>节点信息</h4>
+                                    <span class="close-btn" onclick="closeInfoPanel()">&times;</span>
+                                </div>
+                                <div class="info-panel-content" id="info-panel-content"></div>
+                            </div>
+                            <div class="bloodline-legend">
+                                <div class="legend-item">
+                                    <span class="legend-dot" style="background: #667eea;"></span>
+                                    <span>核心指标</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot" style="background: #48bb78;"></span>
+                                    <span>上游数据源</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot" style="background: #ed8936;"></span>
+                                    <span>下游应用</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bloodline-container" id="bloodline-container" style="display: none;"></div>
                     </div>
                 </div>
 
@@ -730,7 +713,7 @@
             if (page === 'system') loadSystemData();
             else if (page === 'center') loadCenterData();
             else if (page === 'market') loadMarketData();
-            else if (page === 'bloodline') loadBloodline('m005');
+            else if (page === 'bloodline') loadBloodline('all');
             else if (page === 'alert') loadAlertData();
         }
 
@@ -1004,116 +987,33 @@
             }
         }
 
-        // 当前选中的分类
-        let currentCategory = 'all';
-        let allMetrics = [];
-
         // 加载指标中心数据
         function loadCenterData() {
             fetch('/api/metrics')
                 .then(res => res.json())
                 .then(data => {
-                    allMetrics = data;
-                    updateCategoryCounts(data);
-                    renderCenterTable();
-                });
-        }
-
-        // 更新分类计数
-        function updateCategoryCounts(metrics) {
-            const counts = {
-                all: metrics.length,
-                profit: 0, risk: 0, growth: 0, efficiency: 0,
-                capital: 0, liquidity: 0, market: 0
-            };
-            metrics.forEach(m => {
-                if (counts[m.category] !== undefined) {
-                    counts[m.category]++;
-                }
-            });
-            Object.keys(counts).forEach(k => {
-                const el = document.getElementById('cat-count-' + k);
-                if (el) el.textContent = counts[k];
-            });
-        }
-
-        // 切换分类
-        function switchCategory(category, el) {
-            currentCategory = category;
-            document.querySelectorAll('.category-nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            el.classList.add('active');
-            
-            // 更新标题
-            const titles = {
-                all: '指标列表',
-                profit: '盈利能力指标',
-                risk: '风险指标',
-                growth: '发展能力指标',
-                efficiency: '经营效率指标',
-                capital: '资本充足指标',
-                liquidity: '流动性指标',
-                market: '市场表现指标'
-            };
-            document.getElementById('center-title').textContent = titles[category] || '指标列表';
-            
-            renderCenterTable();
-        }
-
-        // 渲染指标中心表格
-        function renderCenterTable() {
-            const tbody = document.querySelector('#metrics-table tbody');
-            const filtered = currentCategory === 'all' 
-                ? allMetrics 
-                : allMetrics.filter(m => m.category === currentCategory);
-            
-            // 更新提示
-            const tag = document.getElementById('filter-status-tag');
-            tag.textContent = currentCategory === 'all' 
-                ? `共 ${filtered.length} 个指标` 
-                : `筛选：${document.querySelector('.category-nav-item.active span:nth-child(2)').textContent} (${filtered.length})`;
-            
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#a0aec0;">该分类下暂无指标</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = filtered.map(metric => `
-                <tr>
-                    <td>
-                        <span style="font-weight: 500;">${metric.name}</span>
-                    </td>
-                    <td>
-                        <span class="status-tag ${getTypeClass(metric.type)}">${metric.type}</span>
-                    </td>
-                    <td>${metric.owner}</td>
-                    <td>${metric.cycle}</td>
-                    <td>
-                        <span class="status-tag ${getStatusClass(metric.status)}">${metric.status}</span>
-                    </td>
-                    <td>
-                        ${metric.status === '已发布' ? `
-                            <button class="btn btn-warning btn-sm" onclick="toggleMetricStatus('${metric.id}')">下线</button>
-                        ` : metric.status === '已下线' ? `
-                            <button class="btn btn-success btn-sm" onclick="toggleMetricStatus('${metric.id}')">重新发布</button>
-                        ` : `
-                            <button class="btn btn-info btn-sm" onclick="approveMetric('${metric.id}')">审批</button>
-                        `}
-                        <button class="btn btn-secondary btn-sm" style="margin-left: 5px;" onclick="showMetricDetail('${metric.id}')">详情</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // 审批通过
-        function approveMetric(metricId) {
-            fetch('/api/approve_metric/' + metricId, { method: 'POST' })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        loadCenterData();
-                    }
+                    const tbody = document.querySelector('#metrics-table tbody');
+                    tbody.innerHTML = data.map(metric => `
+                        <tr>
+                            <td>${metric.name}</td>
+                            <td>
+                                <span class="status-tag ${getTypeClass(metric.type)}">${metric.type}</span>
+                            </td>
+                            <td>${metric.owner}</td>
+                            <td>${metric.cycle}</td>
+                            <td>
+                                <span class="status-tag ${getStatusClass(metric.status)}">${metric.status}</span>
+                            </td>
+                            <td>
+                                ${metric.status === '已发布' ? `
+                                    <button class="btn btn-warning btn-sm" onclick="toggleMetricStatus('${metric.id}')">下线</button>
+                                ` : metric.status === '已下线' ? `
+                                    <button class="btn btn-success btn-sm" onclick="toggleMetricStatus('${metric.id}')">重新发布</button>
+                                ` : ''}
+                                <button class="btn btn-secondary btn-sm" style="margin-left: 5px;" onclick="showMetricDetail('${metric.id}')">详情</button>
+                            </td>
+                        </tr>
+                    `).join('');
                 });
         }
 
@@ -1235,67 +1135,828 @@
                 });
         }
 
+        // 引力图全局变量
+        let bloodlineCanvas = null;
+        let bloodlineCtx = null;
+        let bloodlineNodes = [];
+        let bloodlineLinks = [];
+        let animationId = null;
+        let selectedNode = null;
+        let bloodlineData = null;
+        let isMultiMode = false;
+        let scale = 1;
+        let offsetX = 0;
+        let offsetY = 0;
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+        let draggingNode = null;
+        let dragNodeOffsetX = 0;
+        let dragNodeOffsetY = 0;
+
         // 加载血缘数据
         function loadBloodline(metricId) {
+            stopAnimation();
+            removeCanvasEvents();
+            
             fetch('/api/bloodline/' + metricId)
                 .then(res => res.json())
                 .then(data => {
                     if (Object.keys(data).length > 0) {
-                        document.getElementById('bloodline-container').innerHTML = `
-                            <div class="bloodline-section upstream">
-                                <h4 class="bloodline-section-title">
-                                    <i class="fas fa-arrow-up"></i>
-                                    上游数据源
-                                </h4>
-                                ${data.upstream.map(item => `
-                                    <div class="bloodline-item" style="cursor: pointer;" onclick="showDataPreview('${item.name}', '${item.type}')" title="点击查看数据">
-                                        <div class="bloodline-item-header">
-                                            <span class="bloodline-item-type">${item.type}</span>
-                                            <span class="bloodline-item-name" style="text-decoration: underline; text-decoration-style: dotted;">${item.name}</span>
-                                        </div>
-                                        ${item.fields ? `
-                                            <div class="bloodline-fields">
-                                                ${item.fields.map(field => `<span class="bloodline-field-tag">${field}</span>`).join('')}
-                                            </div>
-                                        ` : ''}
-                                    </div>
-                                `).join('')}
-                            </div>
-                            <div class="bloodline-arrow">
-                                <i class="fas fa-arrow-down"></i>
-                            </div>
-                            <div style="text-align: center; padding: 10px;">
-                                <div style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; font-weight: 600; cursor: pointer;" 
-                                     onclick="showMetricDetail('${metricId}')" title="点击查看指标详情">
-                                    <span style="text-decoration: underline; text-decoration-style: dotted;">${data.metric_name}</span>
-                                </div>
-                            </div>
-                            <div class="bloodline-arrow">
-                                <i class="fas fa-arrow-down"></i>
-                            </div>
-                            <div class="bloodline-section downstream">
-                                <h4 class="bloodline-section-title">
-                                    <i class="fas fa-arrow-down"></i>
-                                    下游应用
-                                </h4>
-                                ${data.downstream.map(item => `
-                                    <div class="bloodline-item" style="cursor: pointer;" onclick="showDataPreview('${item.name}', '${item.type}')" title="点击查看数据">
-                                        <div class="bloodline-item-header">
-                                            <span class="bloodline-item-type">${item.type}</span>
-                                            <span class="bloodline-item-name" style="text-decoration: underline; text-decoration-style: dotted;">${item.name}</span>
-                                        </div>
-                                        ${item.location ? `
-                                            <div style="font-size: 12px; color: #8898aa; margin-top: 8px;">
-                                                <i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i>
-                                                ${item.location}
-                                            </div>
-                                        ` : ''}
-                                    </div>
-                                `).join('')}
-                            </div>
-                        `;
+                        bloodlineData = data;
+                        isMultiMode = metricId === 'all';
+                        if (metricId === 'all') {
+                            initMultiForceGraph(data);
+                        } else {
+                            initForceGraph(data, metricId);
+                        }
                     }
                 });
+        }
+
+        // 停止动画
+        function stopAnimation() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
+
+        // 移除画布事件
+        function removeCanvasEvents() {
+            const canvas = document.getElementById('bloodline-canvas');
+            if (canvas) {
+                canvas.removeEventListener('click', onCanvasClick);
+                canvas.removeEventListener('mousemove', onCanvasMouseMove);
+                canvas.removeEventListener('wheel', onCanvasWheel);
+                canvas.removeEventListener('mousedown', onCanvasMouseDown);
+                canvas.removeEventListener('mousemove', onCanvasDrag);
+                canvas.removeEventListener('mouseup', onCanvasMouseUp);
+                canvas.removeEventListener('mouseleave', onCanvasMouseUp);
+            }
+        }
+
+        // 初始化力导向图（单个指标）
+        function initForceGraph(data, metricId) {
+            const canvas = document.getElementById('bloodline-canvas');
+            const container = document.querySelector('.bloodline-canvas-container');
+            
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            bloodlineCtx = canvas.getContext('2d');
+
+            // 清空之前的数据
+            bloodlineNodes = [];
+            bloodlineLinks = [];
+            selectedNode = null;
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // 添加核心指标节点
+            bloodlineNodes.push({
+                id: 'center',
+                name: data.metric_name,
+                type: 'center',
+                x: centerX,
+                y: centerY,
+                vx: 0,
+                vy: 0,
+                radius: 35,
+                color: '#667eea',
+                data: { metricId }
+            });
+
+            // 添加上游数据源节点
+            const upstreamCount = data.upstream.length;
+            data.upstream.forEach((item, index) => {
+                const angle = (index / upstreamCount) * Math.PI - Math.PI / 2;
+                const distance = 150 + Math.random() * 50;
+                bloodlineNodes.push({
+                    id: 'upstream-' + index,
+                    name: item.name,
+                    type: 'upstream',
+                    x: centerX + Math.cos(angle) * distance,
+                    y: centerY + Math.sin(angle) * distance,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    radius: 22,
+                    color: '#48bb78',
+                    data: item
+                });
+                bloodlineLinks.push({
+                    source: 'upstream-' + index,
+                    target: 'center',
+                    type: 'upstream'
+                });
+            });
+
+            // 添加下游应用节点
+            const downstreamCount = data.downstream.length;
+            data.downstream.forEach((item, index) => {
+                const angle = (index / downstreamCount) * Math.PI + Math.PI / 2;
+                const distance = 150 + Math.random() * 50;
+                bloodlineNodes.push({
+                    id: 'downstream-' + index,
+                    name: item.name,
+                    type: 'downstream',
+                    x: centerX + Math.cos(angle) * distance,
+                    y: centerY + Math.sin(angle) * distance,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    radius: 22,
+                    color: '#ed8936',
+                    data: item
+                });
+                bloodlineLinks.push({
+                    source: 'center',
+                    target: 'downstream-' + index,
+                    type: 'downstream'
+                });
+            });
+
+            // 添加鼠标事件
+            canvas.addEventListener('click', onCanvasClick);
+            canvas.addEventListener('mousemove', onCanvasMouseMove);
+            canvas.addEventListener('wheel', onCanvasWheel);
+            canvas.addEventListener('mousedown', onCanvasMouseDown);
+            canvas.addEventListener('mousemove', onCanvasDrag);
+            canvas.addEventListener('mouseup', onCanvasMouseUp);
+            canvas.addEventListener('mouseleave', onCanvasMouseUp);
+
+            // 开始动画
+            animate();
+        }
+
+        // 初始化力导向图（多个指标）
+        function initMultiForceGraph(allData) {
+            const canvas = document.getElementById('bloodline-canvas');
+            const container = document.querySelector('.bloodline-canvas-container');
+            
+            // 增大画布尺寸，提供更大的布局空间
+            const scaleFactor = 4;
+            canvas.width = container.clientWidth * scaleFactor;
+            canvas.height = container.clientHeight * scaleFactor;
+            bloodlineCtx = canvas.getContext('2d');
+
+            // 清空之前的数据
+            bloodlineNodes = [];
+            bloodlineLinks = [];
+            selectedNode = null;
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // 定义核心指标颜色
+            const centerColors = [
+                '#667eea', '#764ba2', '#f093fb', '#4facfe', 
+                '#43e97b', '#38f9d7', '#fa709a'
+            ];
+
+            // 获取所有指标ID
+            const metricIds = Object.keys(allData);
+            console.log('=== Multi Mode Debug ===');
+            console.log('Number of metrics:', metricIds.length);
+            console.log('Metric IDs:', metricIds);
+
+            const metricCount = metricIds.length;
+
+            // 为每个指标创建节点
+            metricIds.forEach((metricId, index) => {
+                const data = allData[metricId];
+                console.log(`Processing metric ${index + 1}: ${metricId} - ${data.metric_name}`);
+                
+                const angle = (index / metricCount) * Math.PI * 2;
+                const distance = 100 + Math.random() * 30;
+                
+                // 添加核心指标节点
+                const centerId = 'center-' + metricId;
+                bloodlineNodes.push({
+                    id: centerId,
+                    name: data.metric_name,
+                    type: 'center',
+                    x: centerX + Math.cos(angle) * distance,
+                    y: centerY + Math.sin(angle) * distance,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    radius: 30,
+                    color: centerColors[index % centerColors.length],
+                    data: { metricId }
+                });
+
+                // 添加上游数据源节点
+                data.upstream.forEach((item, upstreamIndex) => {
+                    const upstreamAngle = angle - Math.PI / 2 + (upstreamIndex / data.upstream.length) * Math.PI;
+                    const upstreamDistance = 120 + Math.random() * 40;
+                    const nodeId = 'upstream-' + metricId + '-' + upstreamIndex;
+                    
+                    // 检查是否已存在同名数据源节点
+                    const existingNode = bloodlineNodes.find(n => n.name === item.name && n.type === 'upstream');
+                    if (existingNode) {
+                        bloodlineLinks.push({
+                            source: existingNode.id,
+                            target: centerId,
+                            type: 'upstream'
+                        });
+                    } else {
+                        bloodlineNodes.push({
+                            id: nodeId,
+                            name: item.name,
+                            type: 'upstream',
+                            x: centerX + Math.cos(upstreamAngle) * (distance + upstreamDistance),
+                            y: centerY + Math.sin(upstreamAngle) * (distance + upstreamDistance),
+                            vx: (Math.random() - 0.5) * 2,
+                            vy: (Math.random() - 0.5) * 2,
+                            radius: 20,
+                            color: '#48bb78',
+                            data: item
+                        });
+                        bloodlineLinks.push({
+                            source: nodeId,
+                            target: centerId,
+                            type: 'upstream'
+                        });
+                    }
+                });
+
+                // 添加下游应用节点
+                data.downstream.forEach((item, downstreamIndex) => {
+                    const downstreamAngle = angle + Math.PI / 2 + (downstreamIndex / data.downstream.length) * Math.PI;
+                    const downstreamDistance = 120 + Math.random() * 40;
+                    const nodeId = 'downstream-' + metricId + '-' + downstreamIndex;
+                    
+                    // 检查是否已存在同名下游节点
+                    const existingNode = bloodlineNodes.find(n => n.name === item.name && n.type === 'downstream');
+                    if (existingNode) {
+                        bloodlineLinks.push({
+                            source: centerId,
+                            target: existingNode.id,
+                            type: 'downstream'
+                        });
+                    } else {
+                        bloodlineNodes.push({
+                            id: nodeId,
+                            name: item.name,
+                            type: 'downstream',
+                            x: centerX + Math.cos(downstreamAngle) * (distance + downstreamDistance),
+                            y: centerY + Math.sin(downstreamAngle) * (distance + downstreamDistance),
+                            vx: (Math.random() - 0.5) * 2,
+                            vy: (Math.random() - 0.5) * 2,
+                            radius: 20,
+                            color: '#ed8936',
+                            data: item
+                        });
+                        bloodlineLinks.push({
+                            source: centerId,
+                            target: nodeId,
+                            type: 'downstream'
+                        });
+                    }
+                });
+            });
+
+            console.log('Total nodes created:', bloodlineNodes.length);
+            console.log('Total links created:', bloodlineLinks.length);
+
+            // 添加鼠标事件
+            canvas.addEventListener('click', onCanvasClick);
+            canvas.addEventListener('mousemove', onCanvasMouseMove);
+            canvas.addEventListener('wheel', onCanvasWheel);
+            canvas.addEventListener('mousedown', onCanvasMouseDown);
+            canvas.addEventListener('mousemove', onCanvasDrag);
+            canvas.addEventListener('mouseup', onCanvasMouseUp);
+            canvas.addEventListener('mouseleave', onCanvasMouseUp);
+
+            // 开始动画
+            animate();
+        }
+
+        // 力导向算法
+        function applyForces() {
+            const canvas = document.getElementById('bloodline-canvas');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const baseRepulsion = 3000;
+            const strongRepulsion = 8000;
+            const attraction = 0.008;
+            const damping = 0.96;
+            const centerGravity = 0.001;
+            const maxVelocity = 12;
+
+            // 节点间排斥力
+            for (let i = 0; i < bloodlineNodes.length; i++) {
+                for (let j = i + 1; j < bloodlineNodes.length; j++) {
+                    const node1 = bloodlineNodes[i];
+                    const node2 = bloodlineNodes[j];
+                    const dx = node2.x - node1.x;
+                    const dy = node2.y - node1.y;
+                    const rawDist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    const minDist = node1.radius + node2.radius + 25;
+                    const dist = rawDist < 15 ? 15 : rawDist;
+                    
+                    let repulsion = baseRepulsion;
+                    
+                    if (dist < minDist) {
+                        const factor = Math.min(4, minDist / dist);
+                        repulsion = strongRepulsion * factor;
+                    }
+                    
+                    if (node1.type === 'center' && node2.type === 'center') {
+                        repulsion *= 1.5;
+                    }
+                    
+                    const force = repulsion / (dist * dist);
+                    const fx = (dx / dist) * force;
+                    const fy = (dy / dist) * force;
+                    
+                    node1.vx -= fx * 0.5;
+                    node1.vy -= fy * 0.5;
+                    node2.vx += fx * 0.5;
+                    node2.vy += fy * 0.5;
+                }
+            }
+
+            // 连线吸引力
+            bloodlineLinks.forEach(link => {
+                const source = bloodlineNodes.find(n => n.id === link.source);
+                const target = bloodlineNodes.find(n => n.id === link.target);
+                
+                if (source && target) {
+                    const dx = target.x - source.x;
+                    const dy = target.y - source.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    let targetDist = 250;
+                    if (source.type === 'center' && target.type === 'center') {
+                        targetDist = 350;
+                    }
+                    
+                    const force = (dist - targetDist) * attraction;
+                    const fx = (dx / dist) * force;
+                    const fy = (dy / dist) * force;
+                    
+                    source.vx += fx;
+                    source.vy += fy;
+                    target.vx -= fx;
+                    target.vy -= fy;
+                }
+            });
+
+            // 分层引力：保持节点在各自区域
+            bloodlineNodes.forEach(node => {
+                let targetY = centerY;
+                if (node.type === 'upstream') {
+                    targetY = canvas.height * 0.25;
+                } else if (node.type === 'downstream') {
+                    targetY = canvas.height * 0.75;
+                }
+                
+                const dy = targetY - node.y;
+                node.vy += dy * 0.003;
+            });
+
+            // 更新位置并限制边界
+            bloodlineNodes.forEach(node => {
+                node.vx *= damping;
+                node.vy *= damping;
+                
+                // 速度限制，防止颤抖
+                const speed = Math.sqrt(node.vx * node.vx + node.vy * node.vy);
+                if (speed > maxVelocity) {
+                    node.vx = (node.vx / speed) * maxVelocity;
+                    node.vy = (node.vy / speed) * maxVelocity;
+                }
+                
+                node.x += node.vx;
+                node.y += node.vy;
+                
+                // 边界限制（增加边界缓冲区域）
+                const margin = 50;
+                node.x = Math.max(node.radius + margin, Math.min(canvas.width - node.radius - margin, node.x));
+                node.y = Math.max(node.radius + margin, Math.min(canvas.height - node.radius - margin, node.y));
+            });
+        }
+
+        // 绘制节点
+        function drawNode(node) {
+            const ctx = bloodlineCtx;
+            
+            // 选中状态发光效果
+            if (selectedNode === node.id) {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.radius + 10, 0, Math.PI * 2);
+                ctx.fillStyle = node.color + '30';
+                ctx.fill();
+            }
+
+            // 外发光
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.radius + 5, 0, Math.PI * 2);
+            ctx.fillStyle = node.color + '20';
+            ctx.fill();
+
+            // 节点主体
+            const gradient = ctx.createRadialGradient(
+                node.x - node.radius * 0.3, node.y - node.radius * 0.3, 0,
+                node.x, node.y, node.radius
+            );
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(0.4, node.color);
+            gradient.addColorStop(1, adjustColor(node.color, -30));
+
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+            ctx.strokeStyle = adjustColor(node.color, 20);
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 中心节点特殊标记
+            if (node.type === 'center') {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.radius * 0.6, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.radius * 0.6, 0, Math.PI * 2);
+                ctx.strokeStyle = node.color;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+
+            // 节点名称
+            ctx.fillStyle = '#2d3748';
+            ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'center';
+            
+            const text = node.name.length > 6 ? node.name.substring(0, 6) + '...' : node.name;
+            ctx.fillText(text, node.x, node.y + node.radius + 18);
+        }
+
+        // 绘制连线
+        function drawLink(link) {
+            const ctx = bloodlineCtx;
+            const source = bloodlineNodes.find(n => n.id === link.source);
+            const target = bloodlineNodes.find(n => n.id === link.target);
+            
+            if (!source || !target) return;
+
+            const isSelected = selectedNode === source.id || selectedNode === target.id;
+            
+            ctx.beginPath();
+            ctx.moveTo(source.x, source.y);
+            
+            // 计算控制点，创建曲线
+            const midX = (source.x + target.x) / 2;
+            const midY = (source.y + target.y) / 2;
+            const dx = target.x - source.x;
+            const dy = target.y - source.y;
+            const perpX = -dy * 0.1;
+            const perpY = dx * 0.1;
+            
+            ctx.quadraticCurveTo(
+                midX + perpX, midY + perpY,
+                target.x, target.y
+            );
+            
+            ctx.strokeStyle = isSelected ? '#667eea' : '#cbd5e0';
+            ctx.lineWidth = isSelected ? 3 : 2;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // 箭头
+            if (link.type === 'upstream') {
+                drawArrow(target.x, target.y, source.x, source.y, isSelected ? '#667eea' : '#cbd5e0');
+            } else {
+                drawArrow(source.x, source.y, target.x, target.y, isSelected ? '#667eea' : '#cbd5e0');
+            }
+        }
+
+        // 绘制箭头
+        function drawArrow(fromX, fromY, toX, toY, color) {
+            const ctx = bloodlineCtx;
+            const angle = Math.atan2(toY - fromY, toX - fromX);
+            const arrowLength = 10;
+            const arrowWidth = 6;
+            
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(
+                toX - arrowLength * Math.cos(angle - arrowWidth / 10),
+                toY - arrowLength * Math.sin(angle - arrowWidth / 10)
+            );
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(
+                toX - arrowLength * Math.cos(angle + arrowWidth / 10),
+                toY - arrowLength * Math.sin(angle + arrowWidth / 10)
+            );
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        // 颜色调整
+        function adjustColor(color, amount) {
+            const hex = color.replace('#', '');
+            const r = Math.max(0, Math.min(255, parseInt(hex.substr(0, 2), 16) + amount));
+            const g = Math.max(0, Math.min(255, parseInt(hex.substr(2, 2), 16) + amount));
+            const b = Math.max(0, Math.min(255, parseInt(hex.substr(4, 2), 16) + amount));
+            return '#' + r.toString(16).padStart(2, '0') + g.toString(16).padStart(2, '0') + b.toString(16).padStart(2, '0');
+        }
+
+        // 动画循环
+        function animate() {
+            const canvas = document.getElementById('bloodline-canvas');
+            bloodlineCtx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 绘制背景网格（不缩放）
+            drawGrid();
+
+            // 应用变换（缩放和平移）
+            bloodlineCtx.save();
+            bloodlineCtx.translate(canvas.width / 2 + offsetX, canvas.height / 2 + offsetY);
+            bloodlineCtx.scale(scale, scale);
+            bloodlineCtx.translate(-canvas.width / 2, -canvas.height / 2);
+
+            // 应用力
+            applyForces();
+
+            // 绘制连线
+            bloodlineLinks.forEach(drawLink);
+
+            // 绘制节点
+            bloodlineNodes.forEach(drawNode);
+
+            // 恢复变换
+            bloodlineCtx.restore();
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // 绘制背景网格
+        function drawGrid() {
+            const ctx = bloodlineCtx;
+            const canvas = document.getElementById('bloodline-canvas');
+            const gridSize = 30;
+            
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            
+            for (let x = 0; x <= canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            for (let y = 0; y <= canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+        }
+
+        // 滚轮缩放事件
+        function onCanvasWheel(e) {
+            e.preventDefault();
+            const canvas = document.getElementById('bloodline-canvas');
+            
+            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+            const newScale = Math.max(0.3, Math.min(3, scale + delta));
+            
+            // 计算鼠标位置相对于画布中心的偏移
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            // 缩放时保持鼠标位置不变
+            const worldX = (mouseX - canvas.width / 2 - offsetX) / scale;
+            const worldY = (mouseY - canvas.height / 2 - offsetY) / scale;
+            
+            scale = newScale;
+            offsetX = mouseX - canvas.width / 2 - worldX * scale;
+            offsetY = mouseY - canvas.height / 2 - worldY * scale;
+        }
+
+        // 鼠标按下事件（开始拖拽）
+        function onCanvasMouseDown(e) {
+            const canvas = document.getElementById('bloodline-canvas');
+            const container = document.querySelector('.bloodline-canvas-container');
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            // 将鼠标坐标转换为画布坐标（考虑画布缩放）
+            const canvasX = mouseX * (canvas.width / container.clientWidth);
+            const canvasY = mouseY * (canvas.height / container.clientHeight);
+            
+            // 将画布坐标转换为世界坐标（考虑视口缩放和偏移）
+            const worldX = (canvasX - canvas.width / 2 - offsetX) / scale + canvas.width / 2;
+            const worldY = (canvasY - canvas.height / 2 - offsetY) / scale + canvas.height / 2;
+            
+            // 先检测是否点击了节点
+            const clickedNode = findNodeAtPosition(worldX, worldY);
+            
+            if (clickedNode && e.button === 0 && !e.shiftKey) {
+                // 左键点击节点，开始拖拽节点
+                e.preventDefault();
+                draggingNode = clickedNode;
+                dragNodeOffsetX = worldX - clickedNode.x;
+                dragNodeOffsetY = worldY - clickedNode.y;
+                selectedNode = clickedNode.id;
+                showNodeInfo(clickedNode);
+            } else if (e.button === 1 || (e.button === 0 && e.shiftKey)) {
+                // 中键或Shift+左键，平移画布
+                e.preventDefault();
+                isDragging = true;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+                dragOffsetX = offsetX;
+                dragOffsetY = offsetY;
+            }
+        }
+
+        // 鼠标移动事件（拖拽）
+        function onCanvasDrag(e) {
+            const canvas = document.getElementById('bloodline-canvas');
+            const container = document.querySelector('.bloodline-canvas-container');
+            const rect = canvas.getBoundingClientRect();
+            
+            if (draggingNode) {
+                // 拖拽节点
+                e.preventDefault();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                // 将鼠标坐标转换为画布坐标（考虑画布缩放）
+                const canvasX = mouseX * (canvas.width / container.clientWidth);
+                const canvasY = mouseY * (canvas.height / container.clientHeight);
+                
+                // 将画布坐标转换为世界坐标（考虑视口缩放和偏移）
+                const worldX = (canvasX - canvas.width / 2 - offsetX) / scale + canvas.width / 2;
+                const worldY = (canvasY - canvas.height / 2 - offsetY) / scale + canvas.height / 2;
+                
+                // 更新节点位置
+                draggingNode.x = worldX - dragNodeOffsetX;
+                draggingNode.y = worldY - dragNodeOffsetY;
+                
+                // 限制在画布内
+                const margin = 50;
+                draggingNode.x = Math.max(draggingNode.radius + margin, Math.min(canvas.width - draggingNode.radius - margin, draggingNode.x));
+                draggingNode.y = Math.max(draggingNode.radius + margin, Math.min(canvas.height - draggingNode.radius - margin, draggingNode.y));
+                
+                // 重置速度，防止拖拽后节点继续移动
+                draggingNode.vx = 0;
+                draggingNode.vy = 0;
+            } else if (isDragging) {
+                // 平移画布
+                e.preventDefault();
+                offsetX = dragOffsetX + (e.clientX - dragStartX);
+                offsetY = dragOffsetY + (e.clientY - dragStartY);
+            }
+        }
+
+        // 鼠标释放事件（结束拖拽）
+        function onCanvasMouseUp(e) {
+            draggingNode = null;
+            isDragging = false;
+        }
+
+        // 在指定位置查找节点
+        function findNodeAtPosition(x, y) {
+            for (let i = bloodlineNodes.length - 1; i >= 0; i--) {
+                const node = bloodlineNodes[i];
+                const dx = x - node.x;
+                const dy = y - node.y;
+                if (dx * dx + dy * dy <= node.radius * node.radius) {
+                    return node;
+                }
+            }
+            return null;
+        }
+
+        // 画布点击事件（仅处理点击空白区域）
+        function onCanvasClick(e) {
+            const canvas = document.getElementById('bloodline-canvas');
+            const container = document.querySelector('.bloodline-canvas-container');
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            // 将鼠标坐标转换为画布坐标（考虑画布缩放）
+            const canvasX = mouseX * (canvas.width / container.clientWidth);
+            const canvasY = mouseY * (canvas.height / container.clientHeight);
+            
+            // 将画布坐标转换为世界坐标（考虑视口缩放和偏移）
+            const worldX = (canvasX - canvas.width / 2 - offsetX) / scale + canvas.width / 2;
+            const worldY = (canvasY - canvas.height / 2 - offsetY) / scale + canvas.height / 2;
+
+            const clickedNode = findNodeAtPosition(worldX, worldY);
+
+            if (!clickedNode) {
+                selectedNode = null;
+                closeInfoPanel();
+            }
+        }
+
+        // 鼠标移动事件
+        function onCanvasMouseMove(e) {
+            const canvas = document.getElementById('bloodline-canvas');
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            let hoveredNode = false;
+            for (const node of bloodlineNodes) {
+                const dx = x - node.x;
+                const dy = y - node.y;
+                if (dx * dx + dy * dy <= node.radius * node.radius) {
+                    hoveredNode = true;
+                    break;
+                }
+            }
+            
+            canvas.style.cursor = hoveredNode ? 'pointer' : 'default';
+        }
+
+        // 显示节点信息面板
+        function showNodeInfo(node) {
+            const panel = document.getElementById('bloodline-info-panel');
+            const content = document.getElementById('info-panel-content');
+            
+            let html = `
+                <div class="info-row">
+                    <span class="info-label">名称</span>
+                    <span class="info-value">${node.name}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">类型</span>
+                    <span class="info-value">${getNodeTypeName(node.type)}</span>
+                </div>
+            `;
+
+            if (node.data.fields) {
+                html += `
+                    <div class="info-fields">
+                        <div class="info-fields-title">包含字段</div>
+                        ${node.data.fields.map(field => `<span class="info-field-tag">${field}</span>`).join('')}
+                    </div>
+                `;
+            }
+
+            if (node.data.location) {
+                html += `
+                    <div class="info-row">
+                        <span class="info-label">位置</span>
+                        <span class="info-value">${node.data.location}</span>
+                    </div>
+                `;
+            }
+
+            if (node.type === 'center') {
+                html += `
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-primary btn-sm" style="width: 100%;" onclick="showMetricDetail('${node.data.metricId}')">
+                            查看指标详情
+                        </button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-primary btn-sm" style="width: 100%;" onclick="showDataPreview('${node.name}', '${node.data.type || '表'}')">
+                            查看数据预览
+                        </button>
+                    </div>
+                `;
+            }
+
+            content.innerHTML = html;
+            panel.classList.add('show');
+        }
+
+        // 获取节点类型名称
+        function getNodeTypeName(type) {
+            const names = {
+                'center': '核心指标',
+                'upstream': '上游数据源',
+                'downstream': '下游应用'
+            };
+            return names[type] || type;
+        }
+
+        // 关闭信息面板
+        function closeInfoPanel() {
+            const panel = document.getElementById('bloodline-info-panel');
+            panel.classList.remove('show');
         }
 
         // 加载预警数据
